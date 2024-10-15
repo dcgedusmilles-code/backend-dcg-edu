@@ -10,17 +10,23 @@ const { generateToken } = require("../config/jwtToken");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const { generateRefreshToken } = require("../config/refreshtoken");
 const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailCtrl");
 
 // Create a User ----------------------------------------------
 
 const createUser = asyncHandler(async (req, res) => {
-  
   /**
    * TODO:Get the email from req.body
    */
   const email = req.body.email;
+  const firstname = req.body.firstname;
+  const lastname = req.body.lastname;
+  const mobile = req.body.mobile;
+  const password = bcrypt.hashSync(req.body.password, 10);
+  const role = req.body.role;
+  const address = req.body.address;
   /**
    * TODO:With the help of email find the user exists or not
    */
@@ -75,7 +81,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
 
 const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
-  
+
   const findAdmin = await User.findOne({ email });
   if (findAdmin.role !== "admin") throw new Error("Not Authorised");
   if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
@@ -504,6 +510,7 @@ const getOrderByUserId = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
   const { id } = req.params;
