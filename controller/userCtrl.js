@@ -80,6 +80,8 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
 // admin login
 
 const loginAdmin = asyncHandler(async (req, res) => {
+  console.log("Batata");
+  return;
   const { email, password } = req.body;
 
   const findAdmin = await User.findOne({ email });
@@ -109,6 +111,35 @@ const loginAdmin = asyncHandler(async (req, res) => {
     throw new Error("Invalid Credentials");
   }
 });
+
+// const loginAdmin = asyncHandler(async (req, res) => {
+//   const { email, password } = req.body;
+
+//   const findAdmin = await User.findOne({ email });
+//   if (!findAdmin) throw new Error("User not found");
+//   if (findAdmin.role !== "admin") throw new Error("Not Authorised");
+
+//   console.log("ooooooo", findAdmin);
+
+//   if (await findAdmin.isPasswordMatched(password)) {
+//     const refreshToken = await generateRefreshToken(findAdmin._id);
+//     await User.findByIdAndUpdate(findAdmin.id, { refreshToken }, { new: true });
+//     res.cookie("refreshToken", refreshToken, {
+//       httpOnly: true,
+//       maxAge: 72 * 60 * 60 * 1000,
+//     });
+//     res.json({
+//       _id: findAdmin._id,
+//       firstname: findAdmin.firstname,
+//       lastname: findAdmin.lastname,
+//       email: findAdmin.email,
+//       mobile: findAdmin.mobile,
+//       token: generateToken(findAdmin._id),
+//     });
+//   } else {
+//     throw new Error("Invalid Credentials");
+//   }
+// });
 
 //  refresh token
 
