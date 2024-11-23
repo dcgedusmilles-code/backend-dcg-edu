@@ -5,9 +5,6 @@ const validateMongoDbId = require("../utils/validateMongodbId");
 const cloudinaryUploadImg = require("../utils/cloudinary");
 const fs = require("fs");
 
-
-
-
 const createBlog = asyncHandler(async (req, res) => {
   try {
     const newBlog = await Blog.create({
@@ -15,20 +12,19 @@ const createBlog = asyncHandler(async (req, res) => {
       description: req.body.description,
       category: req.body.category,
       author: req.body.author,
-      images: req.body.images, 
+      images: req.body.images,
     });
 
     const populatedBlog = await Blog.findById(newBlog._id)
-      .populate('category') // Popula a categoria para incluir descrição
-      .populate('likes')
-      .populate('dislikes');
+      .populate("category") // Popula a categoria para incluir descrição
+      .populate("likes")
+      .populate("dislikes");
 
     res.json(populatedBlog);
   } catch (error) {
     throw new Error(error);
   }
 });
-
 
 const updateBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
@@ -43,14 +39,12 @@ const updateBlog = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 const getBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
   try {
     const getBlog = await Blog.findById(id)
-      .populate('category')
+      .populate("category")
       .populate("likes")
       .populate("dislikes");
     const updateViews = await Blog.findByIdAndUpdate(
@@ -66,14 +60,12 @@ const getBlog = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 const getAllBlogs = asyncHandler(async (req, res) => {
   try {
     const getBlogs = await Blog.find()
-    .populate('category') 
-    .populate('likes') 
-    .populate('dislikes');
+      .populate("category")
+      .populate("likes")
+      .populate("dislikes");
 
     res.json(getBlogs);
   } catch (error) {
