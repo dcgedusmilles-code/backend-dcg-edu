@@ -6,9 +6,7 @@ const cloudinaryUploadImg = require("../utils/cloudinary");
 const fs = require("fs");
 
 const createBlog = asyncHandler(async (req, res) => {
-
-  return res.status(200).json(req.body)
-/**  try {
+  try {
     const newBlog = await Blog.create({
       title: req.body.title,
       description: req.body.description,
@@ -22,13 +20,10 @@ const createBlog = asyncHandler(async (req, res) => {
       .populate("likes")
       .populate("dislikes");
 
-    res.json(populatedBlog);
+    res.status(201).json(populatedBlog); // Use status 201 para indicar que o recurso foi criado
   } catch (error) {
-
-        return res.status(400).json({error:error.message})
-    //console.log(error)
-    //throw new Error(error);
-  }*/
+    res.status(400).json({ error: error.message });
+  }
 });
 
 const updateBlog = asyncHandler(async (req, res) => {
