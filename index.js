@@ -18,13 +18,13 @@ const uploadRouter = require("./routes/uploadRoute");
 const organizationRouter= require("./routes/organizationRoute")
 const serviceRoutes = require("./routes/serviceRoute")
 const contactRouter = require("./routes/contactRoute");
+const BlogueProjectRoute = require("./routes/BlogueProjectRoute");
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require("swagger-jsdoc");
 
 
 const path = require("path");
-
 const cookieParser = require("cookie-parser");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -74,6 +74,7 @@ app.use("/api/enquiry", enqRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/organization", organizationRouter)
 app.use("/api/contact",contactRouter)
+app.use("/api/project",BlogueProjectRoute) 
 
 
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
