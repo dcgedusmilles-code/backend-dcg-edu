@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 const blogProjectSchema = new mongoose.Schema(
   {
     title: {
@@ -13,7 +12,11 @@ const blogProjectSchema = new mongoose.Schema(
     },
     images: [],
     type: {
-      type: String, 
+      type: String,
+      required: true,
+    },
+    category: {
+      type: String,
       required: true,
     },
     client: {
@@ -36,4 +39,4 @@ const blogProjectSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("BlogProject", blogProjectSchema );
+module.exports = mongoose.model("BlogProject", blogProjectSchema);
