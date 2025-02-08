@@ -70,7 +70,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
       lastname: findUser?.lastname,
       email: findUser?.email,
       mobile: findUser?.mobile,
-      role:findUser?.role,
+      role: findUser?.role,
       token: generateToken(findUser?._id),
     });
   } else {
@@ -81,8 +81,6 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
 // admin login
 
 const loginAdmin = asyncHandler(async (req, res) => {
-
-  return;
   const { email, password } = req.body;
 
   const findAdmin = await User.findOne({ email });

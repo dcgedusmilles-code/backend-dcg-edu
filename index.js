@@ -57,6 +57,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use("/api/user", authRouter);
 app.use("/api/service", serviceRoutes);
+app.use("/api/service/category", serviceRoutes);
 app.use("/api/product", productRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/blog", blogRouter);
