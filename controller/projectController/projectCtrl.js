@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../../utils/validateMongodbId");
 
 const createProject = asyncHandler(async (req, res) => {
-  try {
+    try {
     const newProject = await BlogProject.create(req.body);
     res.status(201).json(newProject);
   } catch (error) {

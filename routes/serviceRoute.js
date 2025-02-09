@@ -27,7 +27,7 @@ router.post(
   "/",
   authMiddleware,
   checkPermission("create"),
-  uploadPhoto.array("image", 2),
+  uploadPhoto.array("image", 10),
   serviceImgResize,
   createService
 );

@@ -5,7 +5,6 @@ const asyncHandler = require("express-async-handler");
 
 const createServiceCategory = asyncHandler(async (req, res) => {
   const { title } = req.body;
-
   
   if (!title) {
     return res.status(400).json({ message: "Title is required" });

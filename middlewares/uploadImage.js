@@ -29,6 +29,7 @@ const uploadPhoto = multer({
 
 const productImgResize = async (req, res, next) => {
   if (!req.files) return next();
+  const baseUrl = `${req.protocol}://${req.get("host")}/api/`
   await Promise.all(
     req.files.map(async (file) => {
       const originalPath = file.path; // Caminho do arquivo original
@@ -84,6 +85,7 @@ const serviceImgResize = async (req, res, next) => {
   if (!req.files) return next();
 
   req.body.image = "";  // Inicializar o array de imagens
+  const baseUrl = `${req.protocol}://${req.get("host")}/api/`
 
   await Promise.all(
     req.files.map(async (file) => {
@@ -96,7 +98,7 @@ const serviceImgResize = async (req, res, next) => {
         .toFile(newFilePath);
 
       // Adicionar o caminho da imagem ao array de imagens no body
-      req.body.image =newFilePath;
+      req.body.image =baseUrl+""+newFilePath;
 
       // Remover o arquivo original se necessário
       // fs.unlinkSync(file.path); 
