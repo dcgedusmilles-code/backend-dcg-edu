@@ -51,6 +51,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   // check if user exists or not
   const findUser = await User.findOne({ email });
+  console.log(password);
   if (findUser && (await findUser.isPasswordMatched(password))) {
     const refreshToken = await generateRefreshToken(findUser?._id);
     const updateuser = await User.findByIdAndUpdate(
@@ -64,7 +65,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
     });
-    res.json({
+    res.status(200).json({
       _id: findUser?._id,
       firstname: findUser?.firstname,
       lastname: findUser?.lastname,
@@ -72,6 +73,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
       mobile: findUser?.mobile,
       role: findUser?.role,
       token: generateToken(findUser?._id),
+      refreshToken: generateRefreshToken(findUser?._id)
     });
   } else {
     throw new Error("Invalid Credentials");

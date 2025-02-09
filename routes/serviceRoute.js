@@ -31,8 +31,8 @@ router.post(
   serviceImgResize,
   createService
 );
-router.get("/", authMiddleware, checkPermission("read"), getAllService);
-router.get("/:id", authMiddleware, checkPermission("read"), getOneService);
+router.get("/", /*authMiddleware, checkPermission("read"),*/ getAllService);
+router.get("/:id",/* authMiddleware, checkPermission("read"),*/ getOneService);
 router.put(
   "/:id",
   authMiddleware,

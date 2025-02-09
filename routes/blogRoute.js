@@ -17,7 +17,7 @@ const router = express.Router();
 
 router.post("/", 
 authMiddleware, checkPermission('create'),
-uploadPhoto.array("images", 2),
+uploadPhoto.array("images", 10),
 blogImgResize, createBlog
 );
 
