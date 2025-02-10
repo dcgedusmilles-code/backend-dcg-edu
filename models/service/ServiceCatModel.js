@@ -1,23 +1,17 @@
 const mongoose = require("mongoose");
 
-
-
-var ServiceCategory = new mongoose.Schema({
-
+var ServiceCategory = new mongoose.Schema(
+  {
     title: {
-        type: String,
-        required: true,
-        unique: true,
-        index: true,
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
     },
+  },
+  {
+    timestamps: true,
+  }
+);
 
-
-},
-    {
-        timestamps: true,
-    }
-)
-
-
-
-module.exports = mongoose.model("ServiceCategory",ServiceCategory )
+module.exports = mongoose.model("ServiceCategory", ServiceCategory);

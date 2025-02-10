@@ -20,9 +20,9 @@ const createBlog = asyncHandler(async (req, res) => {
       .populate("likes")
       .populate("dislikes");
 
-    res.json(populatedBlog);
+    res.status(201).json(populatedBlog); // Use status 201 para indicar que o recurso foi criado
   } catch (error) {
-    throw new Error(error);
+    res.status(400).json({ error: error.message });
   }
 });
 
