@@ -32,7 +32,7 @@ router.post(
   createService
 );
 router.get("/", /*authMiddleware, checkPermission("read"),*/ getAllService);
-router.get("/:id",/* authMiddleware, checkPermission("read"),*/ getOneService);
+router.get("/:id", /* authMiddleware, checkPermission("read"),*/ getOneService);
 router.put(
   "/:id",
   authMiddleware,

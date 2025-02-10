@@ -29,7 +29,7 @@ const uploadPhoto = multer({
 
 const productImgResize = async (req, res, next) => {
   if (!req.files) return next();
-  const baseUrl = `${req.protocol}://${req.get("host")}/api/`
+  const baseUrl = `${req.protocol}://${req.get("host")}/api/`;
   await Promise.all(
     req.files.map(async (file) => {
       const originalPath = file.path; // Caminho do arquivo original
@@ -48,13 +48,11 @@ const productImgResize = async (req, res, next) => {
   next();
 };
 
-
-
 const blogImgResize = async (req, res, next) => {
   if (!req.files) return next();
-    const baseUrl = `${req.protocol}://${req.get("host")}/api/`
+  const baseUrl = `${req.protocol}://${req.get("host")}/api/`;
 
-  req.body.images = [];  // Inicializar o array de imagens
+  req.body.images = []; // Inicializar o array de imagens
 
   await Promise.all(
     req.files.map(async (file) => {
@@ -72,20 +70,18 @@ const blogImgResize = async (req, res, next) => {
       req.body.images.push(`${baseUrl}public/images/blogs/${file.filename}`);
 
       // Remover o arquivo original se necessário
-      // fs.unlinkSync(file.path); 
+      // fs.unlinkSync(file.path);
     })
   );
-  
-  next(); 
+
+  next();
 };
-
-
 
 const serviceImgResize = async (req, res, next) => {
   if (!req.files) return next();
 
-  req.body.image = "";  // Inicializar o array de imagens
-  const baseUrl = `${req.protocol}://${req.get("host")}/api/`
+  req.body.image = ""; // Inicializar o array de imagens
+  const baseUrl = `${req.protocol}://${req.get("host")}/api/`;
 
   await Promise.all(
     req.files.map(async (file) => {
@@ -98,17 +94,47 @@ const serviceImgResize = async (req, res, next) => {
         .toFile(newFilePath);
 
       // Adicionar o caminho da imagem ao array de imagens no body
-      req.body.image =baseUrl+""+newFilePath;
+      req.body.image = baseUrl + "" + newFilePath;
 
       // Remover o arquivo original se necessário
-      // fs.unlinkSync(file.path); 
+      // fs.unlinkSync(file.path);
     })
   );
-  
-  next(); 
+
+  next();
 };
 
+const brandImgResize = async (req, res, next) => {
+  if (!req.files) return next();
 
+  req.body.image = ""; // Inicializar o array de imagens
+  const baseUrl = `${req.protocol}://${req.get("host")}/api/`;
 
+  await Promise.all(
+    req.files.map(async (file) => {
+      const newFilePath = `public/images/brand/${file.filename}`; // Caminho para salvar a imagem redimensionada
 
-module.exports = { uploadPhoto, productImgResize, blogImgResize,serviceImgResize };
+      await sharp(file.path)
+        .resize(300, 300)
+        .toFormat("jpeg")
+        .jpeg({ quality: 90 })
+        .toFile(newFilePath);
+
+      // Adicionar o caminho da imagem ao array de imagens no body
+      req.body.image = baseUrl + "" + newFilePath;
+
+      // Remover o arquivo original se necessário
+      // fs.unlinkSync(file.path);
+    })
+  );
+
+  next();
+};
+
+module.exports = {
+  uploadPhoto,
+  productImgResize,
+  blogImgResize,
+  serviceImgResize,
+  brandImgResize,
+};
