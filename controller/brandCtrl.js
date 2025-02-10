@@ -4,12 +4,16 @@ const validateMongoDbId = require("../utils/validateMongodbId");
 
 const createBrand = asyncHandler(async (req, res) => {
   try {
-    const newBrand = await Brand.create(req.body);
+    const newBrand = await Blog.create({
+      title: req.body.title,
+      images: req.body.images,
+    });
     res.json(newBrand);
   } catch (error) {
     throw new Error(error);
   }
 });
+
 const updateBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
@@ -22,6 +26,7 @@ const updateBrand = asyncHandler(async (req, res) => {
     throw new Error(error);
   }
 });
+
 const deleteBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);

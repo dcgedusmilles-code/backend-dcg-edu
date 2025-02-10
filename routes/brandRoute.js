@@ -18,6 +18,7 @@ router.post(
   isAdmin,
   createBrand
 );
+
 router.put(
   "/:id",
   authMiddleware,
