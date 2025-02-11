@@ -4,7 +4,7 @@ const validateMongoDbId = require("../utils/validateMongodbId");
 
 const createBrand = asyncHandler(async (req, res) => {
   try {
-    const newBrand = await Blog.create({
+    const newBrand = await Brand.create({
       title: req.body.title,
       images: req.body.images,
     });
