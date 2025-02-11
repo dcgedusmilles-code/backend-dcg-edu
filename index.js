@@ -55,6 +55,7 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use("/api/brand", brandRouter);
 app.use("/api/user", authRouter);
 app.use("/api/service", serviceRoutes);
 app.use("/api/service/category", serviceRoutes);
@@ -63,7 +64,7 @@ app.use("/api/projects", projectsRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/blogcategory", blogcategoryRouter);
-app.use("/api/brand", brandRouter);
+
 app.use("/api/coupon", couponRouter);
 app.use("/api/color", colorRouter);
 app.use("/api/enquiry", enqRouter);
