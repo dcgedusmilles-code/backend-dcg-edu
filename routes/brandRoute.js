@@ -8,10 +8,7 @@ const {
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const router = express.Router();
-
 router.post("/", authMiddleware, checkPermission("create"),uploadPhoto.array("images", 10), brandImgResize, createBrand);
-
-
 router.put("/:id", authMiddleware, isAdmin, updateBrand);
 router.delete("/:id", authMiddleware, isAdmin, deleteBrand);
 router.get("/:id", getBrand);
