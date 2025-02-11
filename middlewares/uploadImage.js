@@ -71,13 +71,9 @@ const blogImgResize = async (req, res, next) => {
         .jpeg({ quality: 90 })
         .toFile(newFilePath);
 
-      // Adicionar o caminho da imagem ao array de imagens no body
-      //req.body.images.push(newFilePath);
+      
 
       req.body.images.push(`${baseUrl}public/images/blogs/${file.filename}`);
-
-      // Remover o arquivo original se necessário
-      // fs.unlinkSync(file.path); 
     })
   );
   
@@ -89,7 +85,7 @@ const blogImgResize = async (req, res, next) => {
 const serviceImgResize = async (req, res, next) => {
   if (!req.files) return next();
 
-  req.body.image = "";  // Inicializar o array de imagens
+  req.body.image = [];  // Inicializar o array de imagens
   const baseUrl = `${req.protocol}://${req.get("host")}/api/`
 
   await Promise.all(
@@ -103,7 +99,7 @@ const serviceImgResize = async (req, res, next) => {
         .toFile(newFilePath);
 
       // Adicionar o caminho da imagem ao array de imagens no body
-      req.body.image =baseUrl+""+newFilePath;
+      req.body.image.push(baseUrl+""+newFilePath);
 
       // Remover o arquivo original se necessário
       // fs.unlinkSync(file.path); 
