@@ -52,6 +52,8 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 dbConnect();
 app.use(morgan("dev"));
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -76,6 +78,7 @@ app.use("/api/project", BlogueProjectRoute);
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use("/api/public", express.static(path.join(__dirname, "public")));
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 app.use(notFound);
 app.use(errorHandler);
