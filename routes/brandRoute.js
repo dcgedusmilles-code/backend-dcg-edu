@@ -6,25 +6,35 @@ const {
   deleteBrand,
   getBrand,
   getallBrand,
+  uploadImages,
 } = require("../controller/brandCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const checkPermission = require("../middlewares/checkPermission");
 const router = express.Router();
 
 router.post(
   "/",
   authMiddleware,
-  uploadPhoto.array("image", 10),
-  brandImgResize,
   isAdmin,
+  uploadPhoto.array("image", 2),
+  brandImgResize,
   createBrand
 );
 
 router.put(
+  "/upload/:id",
+  authMiddleware,
+  isAdmin,
+  uploadPhoto.array("image", 2),
+  brandImgResize,
+  updateBrand,
+  uploadImages
+);
+router.put(
   "/:id",
   authMiddleware,
-  uploadPhoto.array("image", 10),
-  brandImgResize,
   isAdmin,
+  checkPermission("update"),
   updateBrand
 );
 router.delete("/:id", authMiddleware, isAdmin, deleteBrand);

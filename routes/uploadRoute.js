@@ -14,6 +14,7 @@ router.post(
   isAdmin,
   uploadPhoto.array("images", 10),
   productImgResize,
+  brandImgResize,
   uploadImages
 );
 
