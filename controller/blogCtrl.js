@@ -4,25 +4,141 @@ const asyncHandler = require("express-async-handler");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const cloudinaryUploadImg = require("../utils/cloudinary");
 const fs = require("fs");
+const path = require("path");
+
+// const createBlog = asyncHandler(async (req, res) => {
+//   console.log("Body recebido:", req.body);
+//   console.log("Arquivo recebido:", req.images);
+
+//   if (!req.images) {
+//     return res.status(400).json({ error: "Nenhuma imagem foi enviada" });
+//   }
+
+//   try {
+//     const imgaUrl = `${req.protocol}://${req.get("host")}/public/images/${
+//       req.images
+//     }`;
+
+//     const newBlog = await Blog.create({
+//       title: req.body.title,
+//       description: req.body.description,
+//       category: req.body.category,
+//       author: req.body.author,
+//       images: imgaUrl,
+//     });
+
+//     const populatedBlog = await Blog.findById(newBlog._id)
+//       .populate("category") // Popula a categoria para incluir descrição
+//       .populate("likes")
+//       .populate("dislikes");
+
+//     console.log("populatedBlog", populatedBlog);
+
+//     res.status(201).json(populatedBlog); // Use status 201 para indicar que o recurso foi criado
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// });
+
+// const createBlog = asyncHandler(async (req, res) => {
+
+//   try {
+//     if (!req.body.title || !req.body.description) {
+//       return res
+//         .status(400)
+//         .json({ message: "Título e descrição são obrigatórios." });
+//     }
+
+//     // Armazena as imagens processadas pelo Multer no array req.body.images
+//     const imageUrls = req.body.images || [];
+
+//     const newBlog = await Blog.create({
+//       title: req.body.title,
+//       description: req.body.description,
+//       category: req.body.category,
+//       author: req.body.author,
+//       images: imageUrls, // Agora, isso será um array de URLs
+//     });
+//     console.log("Opa___", newBlog);
+//     const populatedBlog = await Blog.findById(newBlog._id)
+//       .populate("category")
+//       .populate("likes")
+//       .populate("dislikes");
+
+//     res.status(201).json(populatedBlog);
+//   } catch (error) {
+//     console.error("Erro ao criar blog:", error);
+//     res.status(500).json({ message: "Erro interno no servidor" });
+//   }
+// });
+
+// const createBlog = asyncHandler(async (req, res) => {
+//   console.log("Body recebido:", req.body);
+//   console.log("Arquivo recebido:", req.body.images);
+
+//   // Verifica se a imagem foi enviada corretamente
+//   if (!req.body.images) {
+//     return res.status(400).json({ error: "Nenhuma imagem foi enviada" });
+//   }
+
+//   try {
+//     const imageUrl = `${req.protocol}://${req.get("host")}/public/images/${
+//       req.body.images
+//     }`;
+
+//     const newBlog = await Blog.create({
+//       title: req.body.title,
+//       description: req.body.description,
+//       category: req.body.category,
+//       author: req.body.author,
+//       images: imageUrl, // Salva a URL da imagem no banco
+//     });
+
+//     const populatedBlog = await Blog.findById(newBlog._id)
+//       .populate("category") // Popula a categoria para incluir descrição
+//       .populate("likes")
+//       .populate("dislikes");
+
+//     console.log("Novo blog criado:", populatedBlog);
+
+//     res.status(201).json(populatedBlog);
+//   } catch (error) {
+//     console.error("Erro ao criar blog:", error);
+//     res.status(400).json({ error: error.message });
+//   }
+// });
 
 const createBlog = asyncHandler(async (req, res) => {
   try {
+    if (!req.body.title || !req.body.description) {
+      return res
+        .status(400)
+        .json({ message: "Título e descrição são obrigatórios." });
+    }
+
+    // Obtém as imagens do `uploadImages`
+    const imageUrls = req.uploadedImages || [];
+    console.log("Vamkssssssssss", req.uploadedImages);
+
     const newBlog = await Blog.create({
       title: req.body.title,
       description: req.body.description,
       category: req.body.category,
       author: req.body.author,
-      images: req.body.images,
+      images: imageUrls, // 🔄 Agora estamos armazenando as imagens corretamente
     });
 
+    console.log("Blog Criado:", newBlog);
+
     const populatedBlog = await Blog.findById(newBlog._id)
-      .populate("category") // Popula a categoria para incluir descrição
+      .populate("category")
       .populate("likes")
       .populate("dislikes");
 
-    res.status(201).json(populatedBlog); // Use status 201 para indicar que o recurso foi criado
+    res.status(201).json(populatedBlog);
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Erro ao criar blog:", error);
+    res.status(500).json({ message: "Erro interno no servidor" });
   }
 });
 
@@ -177,13 +293,13 @@ const disliketheBlog = asyncHandler(async (req, res) => {
   }
 });
 
-const uploadImages = asyncHandler(async (req, res) => {
+const uploadImagesBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
   try {
     const uploader = (path) => cloudinaryUploadImg(path, "images");
     const urls = [];
-    const files = req.files;
+    const files = req.body.images;
     for (const file of files) {
       const { path } = file;
       const newpath = await uploader(path);
@@ -216,5 +332,5 @@ module.exports = {
   deleteBlog,
   liketheBlog,
   disliketheBlog,
-  uploadImages,
+  uploadImagesBlog,
 };

@@ -4,6 +4,7 @@ const {
   loginUserCtrl,
   getallUser,
   getaUser,
+  getUserProfile,
   deleteaUser,
   updatedUser,
   blockUser,
@@ -39,6 +40,8 @@ router.post("/admin-login", loginAdmin);
 router.post("/cart", authMiddleware, userCart);
 router.post("/cart/applycoupon", authMiddleware, applyCoupon);
 router.post("/cart/cash-order", authMiddleware, createOrder);
+// Rota protegida com autenticação
+router.get("/profile", authMiddleware, getUserProfile);
 router.get("/all-users", getallUser);
 router.get("/get-orders", authMiddleware, getOrders);
 router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);

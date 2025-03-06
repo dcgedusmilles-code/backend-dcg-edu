@@ -73,7 +73,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
       mobile: findUser?.mobile,
       role: findUser?.role,
       token: generateToken(findUser?._id),
-      refreshToken: generateRefreshToken(findUser?._id)
+      refreshToken: generateRefreshToken(findUser?._id),
     });
   } else {
     throw new Error("Invalid Credentials");
@@ -255,6 +255,17 @@ const getaUser = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new Error(error);
   }
+});
+
+// get user profile section
+const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).select("-password"); // Retorna os dados sem a senha
+
+  if (!user) {
+    return res.status(404).json({ message: "Usuário não encontrado" });
+  }
+
+  res.json(user);
 });
 
 // Get a single user
@@ -569,6 +580,7 @@ module.exports = {
   loginUserCtrl,
   getallUser,
   getaUser,
+  getUserProfile,
   deleteaUser,
   updatedUser,
   blockUser,

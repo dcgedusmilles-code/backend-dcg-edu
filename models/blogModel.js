@@ -1,6 +1,6 @@
 const mongoose = require("mongoose"); // Erase if already required
 
-const Schema = mongoose.Schema
+const Schema = mongoose.Schema;
 
 // Declare the Schema of the Mongo model
 var blogSchema = new Schema(
@@ -10,12 +10,12 @@ var blogSchema = new Schema(
       required: true,
     },
     description: {
-      type: String,
+      type: mongoose.Schema.Types.Mixed,
       required: true,
     },
     category: {
       type: Schema.Types.ObjectId,
-      ref: 'BCategory',
+      ref: "BCategory",
       required: true,
     },
     numViews: {
