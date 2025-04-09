@@ -16,33 +16,68 @@ const sendEmail = require("./emailCtrl");
 
 // Create a User ----------------------------------------------
 
-const createUser = asyncHandler(async (req, res) => {
-  /**
-   * TODO:Get the email from req.body
-   */
-  const email = req.body.email;
-  const firstname = req.body.firstname;
-  const lastname = req.body.lastname;
-  const mobile = req.body.mobile;
-  const password = bcrypt.hashSync(req.body.password, 10);
-  const role = req.body.role;
-  const address = req.body.address;
-  /**
-   * TODO:With the help of email find the user exists or not
-   */
-  const findUser = await User.findOne({ email: email });
+// const createUser = asyncHandler(async (req, res) => {
+//   console.log("Vamkssssssssss", req.body);
+//   try {
+//     if (!req.body.email || !req.body.role || !req.body.password) {
+//       return res.status(400).json({ message: "Preencha todos os dados." });
+//     }
 
-  if (!findUser) {
-    /**
-     * TODO:if user not found user create a new user
-     */
-    const newUser = await User.create(req.body);
-    res.json(newUser);
-  } else {
-    /**
-     * TODO:if user found then thow an error: User already exists
-     */
-    throw new Error("User Already Exists");
+//     const imageUrls = req.uploadedImages || [];
+//     console.log("Vamkssssssssss", req.uploadedImages);
+
+//     const findUser = await User.findOne({
+//       email: req.body.email,
+//     });
+
+//     if (!findUser) {
+//       const newBlog = await User.create({
+//         email: req.body.email,
+//         firstname: req.body.firstname,
+//         lastname: req.body.lastname,
+//         mobile: req.body.mobile,
+//         password: bcrypt.hashSync(req.body.password, 10),
+//         role: req.body.role,
+//         images: imageUrls,
+//         address: req.body.address,
+//       });
+//     }
+//     res.status(201).json(newBlog);
+//   } catch (error) {
+//     console.error("Erro ao criar blog:", error);
+//     res.status(500).json({ message: "Erro interno no servidor" });
+//   }
+// });
+
+const createUser = asyncHandler(async (req, res) => {
+  try {
+    const imageUrls = req.uploadedImages || [];
+    console.log("Vamkssssssssss", req.uploadedImages);
+
+    const findUser = await User.findOne({
+      email: req.body.email,
+    });
+
+    if (!findUser) {
+      const newUser = await User.create({
+        email: req.body.email,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        mobile: req.body.mobile,
+        password: bcrypt.hashSync(req.body.password, 10),
+        role: req.body.role,
+        images: imageUrls,
+        address: req.body.address,
+      });
+      console.log("✅ Usuário Criado:", newUser);
+
+      res.status(201).json(newUser);
+    }
+  } catch (error) {
+    console.error("❌ Erro ao criar usuário:", error);
+    res
+      .status(500)
+      .json({ message: "Erro ao salvar no banco", error: error.message });
   }
 });
 
@@ -73,7 +108,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
       mobile: findUser?.mobile,
       role: findUser?.role,
       token: generateToken(findUser?._id),
-      refreshToken: generateRefreshToken(findUser?._id)
+      refreshToken: generateRefreshToken(findUser?._id),
     });
   } else {
     throw new Error("Invalid Credentials");
@@ -112,37 +147,6 @@ const loginAdmin = asyncHandler(async (req, res) => {
     throw new Error("Invalid Credentials");
   }
 });
-
-// const loginAdmin = asyncHandler(async (req, res) => {
-//   const { email, password } = req.body;
-
-//   const findAdmin = await User.findOne({ email });
-//   if (!findAdmin) throw new Error("User not found");
-//   if (findAdmin.role !== "admin") throw new Error("Not Authorised");
-
-//   console.log("ooooooo", findAdmin);
-
-//   if (await findAdmin.isPasswordMatched(password)) {
-//     const refreshToken = await generateRefreshToken(findAdmin._id);
-//     await User.findByIdAndUpdate(findAdmin.id, { refreshToken }, { new: true });
-//     res.cookie("refreshToken", refreshToken, {
-//       httpOnly: true,
-//       maxAge: 72 * 60 * 60 * 1000,
-//     });
-//     res.json({
-//       _id: findAdmin._id,
-//       firstname: findAdmin.firstname,
-//       lastname: findAdmin.lastname,
-//       email: findAdmin.email,
-//       mobile: findAdmin.mobile,
-//       token: generateToken(findAdmin._id),
-//     });
-//   } else {
-//     throw new Error("Invalid Credentials");
-//   }
-// });
-
-//  refresh token
 
 const handleRefreshToken = asyncHandler(async (req, res) => {
   const cookie = req.cookies;
@@ -255,6 +259,17 @@ const getaUser = asyncHandler(async (req, res) => {
   } catch (error) {
     throw new Error(error);
   }
+});
+
+// get user profile section
+const getUserProfile = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user.id).select("-password"); // Retorna os dados sem a senha
+
+  if (!user) {
+    return res.status(404).json({ message: "Usuário não encontrado" });
+  }
+
+  res.json(user);
 });
 
 // Get a single user
@@ -564,11 +579,43 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
   }
 });
 
+const uploadImagesUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateMongoDbId(id);
+  try {
+    const uploader = (path) => cloudinaryUploadImg(path, "images");
+    const urls = [];
+    const files = req.body.images;
+    for (const file of files) {
+      const { path } = file;
+      const newpath = await uploader(path);
+      console.log(newpath);
+      urls.push(newpath);
+      fs.unlinkSync(path);
+    }
+    const findUser = await User.findByIdAndUpdate(
+      id,
+      {
+        images: urls.map((file) => {
+          return file;
+        }),
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(findUser);
+  } catch (error) {
+    throw new Error(error);
+  }
+});
+
 module.exports = {
   createUser,
   loginUserCtrl,
   getallUser,
   getaUser,
+  getUserProfile,
   deleteaUser,
   updatedUser,
   blockUser,
@@ -590,4 +637,5 @@ module.exports = {
   updateOrderStatus,
   getAllOrders,
   getOrderByUserId,
+  uploadImagesUser,
 };

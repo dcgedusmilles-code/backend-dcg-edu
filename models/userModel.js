@@ -26,6 +26,7 @@ var userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    images: [],
     role: {
       type: String,
       default: "user",

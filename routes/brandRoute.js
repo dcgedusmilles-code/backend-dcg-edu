@@ -10,6 +10,7 @@ const {
 } = require("../controller/brandCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const checkPermission = require("../middlewares/checkPermission");
+const uploadImagens = require("../models/uploadImagens");
 const router = express.Router();
 
 router.post(
@@ -17,8 +18,8 @@ router.post(
   authMiddleware,
   isAdmin,
   uploadPhoto.array("image", 2),
-  brandImgResize,
-  createBrand
+  createBrand,
+  uploadImagens
 );
 
 router.put(
@@ -26,9 +27,8 @@ router.put(
   authMiddleware,
   isAdmin,
   uploadPhoto.array("image", 2),
-  brandImgResize,
   updateBrand,
-  uploadImages
+  uploadImagens
 );
 router.put(
   "/:id",

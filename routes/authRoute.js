@@ -4,6 +4,7 @@ const {
   loginUserCtrl,
   getallUser,
   getaUser,
+  getUserProfile,
   deleteaUser,
   updatedUser,
   blockUser,
@@ -24,11 +25,23 @@ const {
   getOrders,
   updateOrderStatus,
   getAllOrders,
+  uploadImagesUser,
 } = require("../controller/userCtrl");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const { uploadImages } = require("../controller/uploadCtrl");
+const { uploadPhoto } = require("../middlewares/uploadImage");
+const checkPermission = require("../middlewares/checkPermission");
 const router = express.Router();
-router.post("/register", createUser);
+
+router.post(
+  "/register",
+  authMiddleware,
+  checkPermission("create"),
+  uploadPhoto.array("images", 10), // Se estiver usando o Multer
+  uploadImages,
+  createUser
+);
 router.post("/forgot-password-token", forgotPasswordToken);
 
 router.put("/reset-password/:token", resetPassword);
@@ -39,6 +52,8 @@ router.post("/admin-login", loginAdmin);
 router.post("/cart", authMiddleware, userCart);
 router.post("/cart/applycoupon", authMiddleware, applyCoupon);
 router.post("/cart/cash-order", authMiddleware, createOrder);
+// Rota protegida com autenticação
+router.get("/profile", authMiddleware, getUserProfile);
 router.get("/all-users", getallUser);
 router.get("/get-orders", authMiddleware, getOrders);
 router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
@@ -55,7 +70,8 @@ router.put(
   "/order/update-order/:id",
   authMiddleware,
   isAdmin,
-  updateOrderStatus
+  updateOrderStatus,
+  uploadImagesUser
 );
 router.put("/edit-user", authMiddleware, updatedUser);
 router.put("/save-address", authMiddleware, saveAddress);

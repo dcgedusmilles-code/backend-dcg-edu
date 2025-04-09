@@ -28,7 +28,6 @@ router.post(
   authMiddleware,
   checkPermission("create"),
   uploadPhoto.array("image", 10),
-  serviceImgResize, 
   createService
 );
 router.get("/", /*authMiddleware, checkPermission("read"),*/ getAllService);
@@ -38,7 +37,6 @@ router.put(
   authMiddleware,
   checkPermission("update"),
   uploadPhoto.array("image", 2),
-  serviceImgResize,
   updateService
 );
 router.delete("/:id", authMiddleware, checkPermission("delete"), deleteService);
