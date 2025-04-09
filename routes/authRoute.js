@@ -25,11 +25,23 @@ const {
   getOrders,
   updateOrderStatus,
   getAllOrders,
+  uploadImagesUser,
 } = require("../controller/userCtrl");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const { uploadImages } = require("../controller/uploadCtrl");
+const { uploadPhoto } = require("../middlewares/uploadImage");
+const checkPermission = require("../middlewares/checkPermission");
 const router = express.Router();
-router.post("/register", createUser);
+
+router.post(
+  "/register",
+  authMiddleware,
+  checkPermission("create"),
+  uploadPhoto.array("images", 10), // Se estiver usando o Multer
+  uploadImages,
+  createUser
+);
 router.post("/forgot-password-token", forgotPasswordToken);
 
 router.put("/reset-password/:token", resetPassword);
@@ -58,7 +70,8 @@ router.put(
   "/order/update-order/:id",
   authMiddleware,
   isAdmin,
-  updateOrderStatus
+  updateOrderStatus,
+  uploadImagesUser
 );
 router.put("/edit-user", authMiddleware, updatedUser);
 router.put("/save-address", authMiddleware, saveAddress);
