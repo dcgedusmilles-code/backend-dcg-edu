@@ -10,7 +10,7 @@ const {
   deleteBlog,
   liketheBlog,
   disliketheBlog,
-  uploadImages,
+  uploadImagesBlog,
 } = require("../controller/blogCtrl");
 
 const checkPermission = require("../middlewares/checkPermission");
@@ -21,9 +21,9 @@ router.post(
   "/",
   authMiddleware,
   checkPermission("create"),
-  uploadPhoto.array("images", 10),
-  blogImgResize,
-  createBlog
+  uploadPhoto.array("images", 10), // Se estiver usando o Multer
+  uploadImages, // 🔄 Agora chamamos primeiro o upload de imagens
+  createBlog // 🔄 Depois chamamos a função para criar o blog com as imagens recebidas
 );
 
 router.put(
@@ -32,7 +32,7 @@ router.put(
   isAdmin,
   uploadPhoto.array("images", 2),
   blogImgResize,
-  uploadImages
+  uploadImagesBlog
 );
 router.put("/likes", authMiddleware, liketheBlog);
 router.put("/dislikes", authMiddleware, disliketheBlog);

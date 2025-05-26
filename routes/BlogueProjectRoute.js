@@ -7,8 +7,14 @@ const {
   getProject,
   updateProject,
   deleteProject,
+  createProject,
+  getAllProjects,
+  getProject,
+  updateProject,
+  deleteProject,
 } = require("../controller/projectController/projectCtrl");
 
+const checkPermission = require("../middlewares/checkPermission");
 const checkPermission = require("../middlewares/checkPermission");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const { blogImgResize, uploadPhoto } = require("../middlewares/uploadImage");

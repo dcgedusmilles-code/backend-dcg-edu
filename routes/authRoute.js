@@ -6,6 +6,7 @@ const {
   loginUserCtrl,
   getallUser,
   getaUser,
+  getUserProfile,
   deleteaUser,
   updatedUser,
   blockUser,
@@ -26,6 +27,7 @@ const {
   getOrders,
   updateOrderStatus,
   getAllOrders,
+  uploadImagesUser,
 } = require("../controller/userCtrl");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
@@ -40,6 +42,8 @@ router.post("/admin-login", loginAdmin);
 router.post("/cart", authMiddleware, userCart);
 router.post("/cart/applycoupon", authMiddleware, applyCoupon);
 router.post("/cart/cash-order", authMiddleware, createOrder);
+// Rota protegida com autenticação
+router.get("/profile", authMiddleware, getUserProfile);
 router.get("/all-users", getallUser);
 router.get("/get-orders", authMiddleware, getOrders);
 router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
@@ -56,7 +60,8 @@ router.put(
   "/order/update-order/:id",
   authMiddleware,
   isAdmin,
-  updateOrderStatus
+  updateOrderStatus,
+  uploadImagesUser
 );
 router.put("/edit-user", authMiddleware, updatedUser);
 router.put("/save-address", authMiddleware, saveAddress);

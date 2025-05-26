@@ -19,8 +19,8 @@ router.post(
   authMiddleware,
   isAdmin,
   uploadPhoto.array("image", 2),
-  brandImgResize,
-  createBrand
+  createBrand,
+  uploadImagens
 );
 
 router.put(
@@ -28,9 +28,8 @@ router.put(
   authMiddleware,
   isAdmin,
   uploadPhoto.array("image", 2),
-  brandImgResize,
   updateBrand,
-  uploadImages
+  uploadImagens
 );
 router.put(
   "/:id",
