@@ -1,5 +1,8 @@
 const express = require("express");
+const router = express.Router();
+
 const { brandImgResize, uploadPhoto } = require("./../middlewares/uploadImage");
+
 const {
   createBrand,
   updateBrand,
@@ -10,7 +13,6 @@ const {
 } = require("../controller/brandCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const checkPermission = require("../middlewares/checkPermission");
-const router = express.Router();
 
 router.post(
   "/",

@@ -1,4 +1,6 @@
 const express = require("express");
+const router = express.Router();
+
 const { authMiddleware } = require("./../middlewares/authMiddleware");
 const {
   serviceImgResize,
@@ -20,15 +22,13 @@ const {
   deleteCategoryService,
 } = require("./../controller/serviceController/serviceCategory");
 
-const router = express.Router();
-
 //Service routes
 router.post(
   "/",
   authMiddleware,
   checkPermission("create"),
   uploadPhoto.array("image", 10),
-  serviceImgResize, 
+  serviceImgResize,
   createService
 );
 router.get("/", /*authMiddleware, checkPermission("read"),*/ getAllService);

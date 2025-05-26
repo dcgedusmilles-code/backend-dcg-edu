@@ -1,4 +1,6 @@
 const express = require("express");
+const router = express.Router();
+
 const {
   createCategory,
   updateCategory,
@@ -7,7 +9,6 @@ const {
   getallCategory,
 } = require("../controller/prodcategoryCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
-const router = express.Router();
 
 router.post("/", authMiddleware, isAdmin, createCategory);
 router.put("/:id", authMiddleware, isAdmin, updateCategory);

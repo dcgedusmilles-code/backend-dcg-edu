@@ -1,17 +1,17 @@
+const crypto = require("crypto");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const uniqid = require("uniqid");
+const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const Product = require("../models/productModel");
 const Cart = require("../models/cartModel");
 const Coupon = require("../models/couponModel");
 const Order = require("../models/orderModel");
-const uniqid = require("uniqid");
 
-const asyncHandler = require("express-async-handler");
 const { generateToken } = require("../config/jwtToken");
 const validateMongoDbId = require("../utils/validateMongodbId");
 const { generateRefreshToken } = require("../config/refreshtoken");
-const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const sendEmail = require("./emailCtrl");
 
 // Create a User ----------------------------------------------
@@ -73,7 +73,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
       mobile: findUser?.mobile,
       role: findUser?.role,
       token: generateToken(findUser?._id),
-      refreshToken: generateRefreshToken(findUser?._id)
+      refreshToken: generateRefreshToken(findUser?._id),
     });
   } else {
     throw new Error("Invalid Credentials");
