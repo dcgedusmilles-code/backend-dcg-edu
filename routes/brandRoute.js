@@ -13,6 +13,7 @@ const {
 } = require("../controller/brandCtrl");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const checkPermission = require("../middlewares/checkPermission");
+const { uploadsImages } = require("../controller/uploadCtrl");
 
 router.post(
   "/",
@@ -20,7 +21,7 @@ router.post(
   isAdmin,
   uploadPhoto.array("image", 2),
   createBrand,
-  uploadImagens
+  uploadsImages
 );
 
 router.put(
@@ -29,7 +30,7 @@ router.put(
   isAdmin,
   uploadPhoto.array("image", 2),
   updateBrand,
-  uploadImagens
+  uploadsImages
 );
 router.put(
   "/:id",

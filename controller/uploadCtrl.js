@@ -7,7 +7,7 @@ const {
   cloudinaryDeleteImg,
 } = require("../utils/cloudinary");
 
-const uploadImages = asyncHandler(async (req, res, next) => {
+const uploadsImages = asyncHandler(async (req, res, next) => {
   try {
     // console.log("🔍 DEBUG - Imagens Recebidas:", req.body);
     // if (
@@ -73,6 +73,6 @@ const deleteImages = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  uploadImages,
+   uploadsImages,
   deleteImages,
 };
