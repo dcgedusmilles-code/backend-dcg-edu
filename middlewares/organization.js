@@ -1,33 +1,42 @@
-const organizationModel = require("./../models/organizationModel");
+const { Op } = require("sequelize");
+const { Organization } = require("./../models");
+
 
 const checkDuplicateOrganization = async (req, res, next) => {
   try {
     const { email, nif, mobile, name } = req.body;
+
     if (!email || !nif || !mobile || !name) {
       return res.status(400).json({
         message:
-          "Os campos Name, email, NIF e número de telefone são obrigatórios.",
+          "Os campos Nome, Email, NIF e Número de Telefone são obrigatórios.",
       });
     }
-    const alreadyExist = await organizationModel.findOne({
-      $or: [{ email }, { nif }, { mobile }],
+
+    const existingOrg = await Organization.findOne({
+      where: {
+        [Op.or]: [
+          { email },
+          { nif },
+          { mobile }
+        ],
+      },
     });
 
-    if (alreadyExist) {
-      // Verifica qual dos campos está duplicado e retorna a mensagem correspondente
+    if (existingOrg) {
       let duplicateField = "";
-      if (alreadyExist.email === email) duplicateField = "email";
-      else if (alreadyExist.nif === nif) duplicateField = "nif";
-      else if (alreadyExist.mobile === mobile)
-        duplicateField = "número de telefone";
-      return res
-        .status(400)
-        .json({ message: `O ${duplicateField} já está em uso.` });
+      if (existingOrg.email === email) duplicateField = "email";
+      else if (existingOrg.nif === nif) duplicateField = "NIF";
+      else if (existingOrg.mobile === mobile) duplicateField = "número de telefone";
+
+      return res.status(400).json({
+        message: `O ${duplicateField} já está em uso.`,
+      });
     }
-    // Se não houver duplicatas, segue para a próxima função
+
     next();
   } catch (error) {
-    next(error); // Passa o erro para o middleware de tratamento de erros
+    next(error);
   }
 };
 

@@ -1,65 +1,68 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect"); // conexão Sequelize
 
-// Declare the Schema of the Mongo model
-var productSchema = new mongoose.Schema(
+class Product extends Model { }
+
+Product.init(
   {
     title: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
       trim: true,
     },
     slug: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
       lowercase: true,
     },
     description: {
-      type: String,
-      required: true,
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
     price: {
-      type: Number,
-      required: true,
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
     },
-    category: {
-      type: String,
-      required: true,
+    categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
+
     brand: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     quantity: {
-      type: Number,
-      required: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     sold: {
-      type: Number,
-      default: 0,
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
-    images: [
-      {
-        public_id: String,
-        url: String,
-      },
-    ],
-    color: [],
-    tags: String,
-    ratings: [
-      {
-        star: Number,
-        comment: String,
-        postedby: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      },
-    ],
+    images: {
+      type: DataTypes.JSON, // armazena array de objetos [{ public_id, url }]
+      defaultValue: [],
+    },
+    color: {
+      type: DataTypes.JSON, // pode armazenar array de strings ou objetos
+      defaultValue: [],
+    },
+    tags: {
+      type: DataTypes.STRING,
+    },
     totalrating: {
-      type: String,
-      default: 0,
+      type: DataTypes.STRING,
+      defaultValue: "0",
     },
   },
-  { timestamps: true }
+  {
+    sequelize,
+    modelName: "Product",
+    tableName: "products",
+    timestamps: true,
+  }
 );
 
-//Export the model
-module.exports = mongoose.model("Product", productSchema);
+module.exports = Product;

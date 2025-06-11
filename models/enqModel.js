@@ -1,29 +1,32 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-// Declare the Schema of the Mongo model
-var enqSchema = new mongoose.Schema({
+class Enquiry extends Model { }
+
+Enquiry.init({
   name: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   email: {
-    type: String,
-    required: true,
+    type: DataTypes.STRING,
+    validate: { isEmail: true },
   },
-  mobile: {
-    type: String,
-    required: true,
+  subject: {
+    type: DataTypes.STRING,
   },
-  comment: {
-    type: String,
-    required: true,
+  message: {
+    type: DataTypes.TEXT,
   },
   status: {
-    type: String,
-    default: "Submitted",
-    enum: ["Submitted", "Contacted", "In Progress", "Resolved"],
-  },
+    type: DataTypes.STRING,
+    defaultValue: "pending", // exemplo
+  }
+}, {
+  sequelize,
+  modelName: "Enquiry",
+  tableName: "enquiries",
+  timestamps: true,
 });
 
-//Export the model
-module.exports = mongoose.model("Enquiry", enqSchema);
+module.exports = Enquiry;

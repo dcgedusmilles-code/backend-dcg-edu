@@ -1,19 +1,21 @@
-const mongoose = require("mongoose"); // Erase if already required
+// models/BCategory.js
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-// Declare the Schema of the Mongo model
-var blogcategorySchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-    },
+const BCategory = sequelize.define('BCategory', {
+  id: {
+    type: DataTypes.INTEGER.UNSIGNED,
+    autoIncrement: true,
+    primaryKey: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  title: {
+    type: DataTypes.STRING,
+    unique: true,
+    allowNull: false,
+  },
+}, {
+  tableName: 'b_categories',
+  timestamps: true,
+});
 
-//Export the model
-module.exports = mongoose.model("BCategory", blogcategorySchema);
+module.exports = BCategory;

@@ -1,269 +1,286 @@
 const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const uniqid = require("uniqid");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const Product = require("../models/productModel");
-const Cart = require("../models/cartModel");
-const Coupon = require("../models/couponModel");
-const Order = require("../models/orderModel");
-
 const { generateToken } = require("../config/jwtToken");
-const validateMongoDbId = require("../utils/validateMongodbId");
+const validateId = require("../utils/validateId");
 const { generateRefreshToken } = require("../config/refreshtoken");
 const sendEmail = require("./emailCtrl");
+const { Op } = require("sequelize");
 
-// Create a User ----------------------------------------------
-
-// const createUser = asyncHandler(async (req, res) => {
-//   console.log("Vamkssssssssss", req.body);
-//   try {
-//     if (!req.body.email || !req.body.role || !req.body.password) {
-//       return res.status(400).json({ message: "Preencha todos os dados." });
-//     }
-
-//     const imageUrls = req.uploadedImages || [];
-//     console.log("Vamkssssssssss", req.uploadedImages);
-
-//     const findUser = await User.findOne({
-//       email: req.body.email,
-//     });
-
-//     if (!findUser) {
-//       const newBlog = await User.create({
-//         email: req.body.email,
-//         firstname: req.body.firstname,
-//         lastname: req.body.lastname,
-//         mobile: req.body.mobile,
-//         password: bcrypt.hashSync(req.body.password, 10),
-//         role: req.body.role,
-//         images: imageUrls,
-//         address: req.body.address,
-//       });
-//     }
-//     res.status(201).json(newBlog);
-//   } catch (error) {
-//     console.error("Erro ao criar blog:", error);
-//     res.status(500).json({ message: "Erro interno no servidor" });
-//   }
-// });
 
 const createUser = asyncHandler(async (req, res) => {
-  try {
-    const imageUrls = req.uploadedImages || [];
-    console.log("Vamkssssssssss", req.uploadedImages);
+  const { email, mobile, password, firstname, lastname } = req.body;
 
-    const findUser = await User.findOne({
-      email: req.body.email,
-    });
-
-    if (!findUser) {
-      const newUser = await User.create({
-        email: req.body.email,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        mobile: req.body.mobile,
-        password: bcrypt.hashSync(req.body.password, 10),
-        role: req.body.role,
-        images: imageUrls,
-        address: req.body.address,
-      });
-      console.log("✅ Usuário Criado:", newUser);
-
-      res.status(201).json(newUser);
-    }
-  } catch (error) {
-    console.error("❌ Erro ao criar usuário:", error);
-    res
-      .status(500)
-      .json({ message: "Erro ao salvar no banco", error: error.message });
+  if (!email || !password || !firstname || !lastname || !mobile) {
+    return res.status(400).json({ message: "Todos os campos são obrigatórios." });
   }
+
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) {
+    return res.status(409).json({ message: "Usuário já existe com este e-mail." });
+  }
+
+  const existingPhone = await User.findOne({ where: { mobile } });
+  if (existingPhone) {
+    return res.status(409).json({ message: "Usuário já existe com este número." });
+  }
+
+  const user = await User.create({ email, password, firstname, lastname, mobile });
+
+  res.status(201).json({
+    id: user.id,
+    email: user.email,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    mobile: user.mobile,
+    role: user.role,
+    createdAt: user.createdAt,
+  });
 });
 
-// Login a user
-const loginUserCtrl = asyncHandler(async (req, res) => {
-  const { email, password } = req.body;
-  // check if user exists or not
-  const findUser = await User.findOne({ email });
-  console.log(password);
-  if (findUser && (await findUser.isPasswordMatched(password))) {
-    const refreshToken = await generateRefreshToken(findUser?._id);
-    const updateuser = await User.findByIdAndUpdate(
-      findUser.id,
-      {
-        refreshToken: refreshToken,
-      },
-      { new: true }
-    );
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      maxAge: 72 * 60 * 60 * 1000,
-    });
-    res.status(200).json({
-      _id: findUser?._id,
-      firstname: findUser?.firstname,
-      lastname: findUser?.lastname,
-      email: findUser?.email,
-      mobile: findUser?.mobile,
-      role: findUser?.role,
-      token: generateToken(findUser?._id),
-      refreshToken: generateRefreshToken(findUser?._id),
-    });
-  } else {
+
+const loginHandler = async ({ email, password, role }) => {
+  // Busca usuário pelo email
+  const user = await User.findOne({ where: { email } });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  // Verifica role, se fornecida
+  if (role && user.role !== role) {
+    throw new Error("Not Authorized");
+  }
+
+  // Valida a senha (método do model, similar ao Mongoose)
+  const isPasswordValid = await user.isPasswordMatched(password);
+
+  if (!isPasswordValid) {
     throw new Error("Invalid Credentials");
   }
-});
 
-// admin login
+  // Gera o refreshToken
+  const refreshToken = await generateRefreshToken(user.id);
+
+  // Atualiza o refreshToken no banco (usando update)
+  await User.update(
+    { refreshToken },
+    { where: { id: user.id } }
+  );
+
+  // Monta dados do usuário para retorno
+  const userData = {
+    id: user.id,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email,
+    mobile: user.mobile,
+    role: user.role,
+    token: generateToken(user.id),
+  };
+
+  return { userData, refreshToken };
+};
+
+const loginUserCtrl = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    // Usa o loginHandler (que já usa Sequelize)
+    const { userData, refreshToken } = await loginHandler({ email, password });
+
+  // Define cookie de refresh token
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      maxAge: 72 * 60 * 60 * 1000, // 72h
+    });
+
+    // Retorna dados do usuário + refreshToken
+    res.status(200).json({ ...userData, refreshToken });
+  } catch (error) {
+    // Trate erros (exemplo: user não encontrado ou senha inválida)
+    res.status(401).json({ message: error.message || "Login failed" });
+  }
+});
 
 const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const findAdmin = await User.findOne({ email });
-  if (findAdmin.role !== "admin") throw new Error("Not Authorised");
-  if (findAdmin && (await findAdmin.isPasswordMatched(password))) {
-    const refreshToken = await generateRefreshToken(findAdmin?._id);
-    const updateuser = await User.findByIdAndUpdate(
-      findAdmin.id,
-      {
-        refreshToken: refreshToken,
-      },
-      { new: true }
-    );
+  try {
+    // Usando loginHandler para validar usuário e role admin
+    const { userData, refreshToken } = await loginHandler({ email, password, role: "admin" });
+
+  // Define cookie de refreshToken (httpOnly, 72h)
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
     });
-    res.json({
-      _id: findAdmin?._id,
-      firstname: findAdmin?.firstname,
-      lastname: findAdmin?.lastname,
-      email: findAdmin?.email,
-      mobile: findAdmin?.mobile,
-      token: generateToken(findAdmin?._id),
-    });
-  } else {
-    throw new Error("Invalid Credentials");
+
+    // Retorna dados do admin, sem refreshToken no corpo da resposta
+    res.status(200).json(userData);
+  } catch (error) {
+    res.status(401).json({ message: error.message || "Login failed" });
   }
 });
 
 const handleRefreshToken = asyncHandler(async (req, res) => {
-  const cookie = req.cookies;
-  if (!cookie?.refreshToken) throw new Error("No Refresh Token in Cookies");
-  const refreshToken = cookie.refreshToken;
-  const user = await User.findOne({ refreshToken });
-  if (!user) throw new Error(" No Refresh token present in db or not matched");
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    res.status(401);
+    throw new Error("No Refresh Token in Cookies");
+  }
+
+  // Buscar usuário com esse refreshToken no banco
+  const user = await User.findOne({ where: { refreshToken } });
+  if (!user) {
+    res.status(403);
+    throw new Error("Refresh token not found in database or not matched");
+  }
+
+  // Verificar validade do refresh token
   jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
-    if (err || user.id !== decoded.id) {
-      throw new Error("There is something wrong with refresh token");
+    if (err || user.id.toString() !== decoded.id) {
+      res.status(403);
+      throw new Error("Invalid refresh token");
     }
-    const accessToken = generateToken(user?._id);
+
+    // Gerar um novo access token
+    const accessToken = generateToken(user.id);
     res.json({ accessToken });
   });
 });
 
-// logout functionality
-
 const logout = asyncHandler(async (req, res) => {
-  const cookie = req.cookies;
-  if (!cookie?.refreshToken) throw new Error("No Refresh Token in Cookies");
-  const refreshToken = cookie.refreshToken;
-  const user = await User.findOne({ refreshToken });
+  const refreshToken = req.cookies?.refreshToken;
+
+  if (!refreshToken) {
+    res.status(400);
+    throw new Error("No Refresh Token in Cookies");
+  }
+
+  // Buscar usuário pelo refreshToken
+  const user = await User.findOne({ where: { refreshToken } });
+
   if (!user) {
+    // Se não encontrou o usuário, limpa o cookie mesmo assim
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,
+      sameSite: "None",
     });
-    return res.sendStatus(204); // forbidden
+    return res.sendStatus(204); // No Content
   }
-  await User.findOneAndUpdate(refreshToken, {
-    refreshToken: "",
-  });
+
+  // Atualizar o usuário removendo o refreshToken no banco
+  await user.update({ refreshToken: null });
+
+  // Limpar cookie no cliente
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
+    sameSite: "None",
   });
-  res.sendStatus(204); // forbidden
-});
 
-// Update a user
+  res.sendStatus(204); // No Content
+});
 
 const updatedUser = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  validateMongoDbId(_id);
+  const userId = req.user._id;
+
+  validateId(userId); // valide conforme sua regra
+
+  const { firstname, lastname, email, mobile } = req.body;
+  const updateData = { firstname, lastname, email, mobile };
 
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      _id,
-      {
-        firstname: req?.body?.firstname,
-        lastname: req?.body?.lastname,
-        email: req?.body?.email,
-        mobile: req?.body?.mobile,
-      },
-      {
-        new: true,
-      }
-    );
-    res.json(updatedUser);
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    // Atualiza os campos permitidos
+    await user.update(updateData);
+
+    res.json(user);
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    throw new Error(error.message);
   }
 });
 
-// save user Address
+const saveAddress = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
 
-const saveAddress = asyncHandler(async (req, res, next) => {
-  const { _id } = req.user;
-  validateMongoDbId(_id);
+  validateId(userId);
+
+  const { address } = req.body;
 
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      _id,
-      {
-        address: req?.body?.address,
-      },
-      {
-        new: true,
-      }
-    );
-    res.json(updatedUser);
+    const user = await User.findByPk(userId);
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    await user.update({ address });
+
+    res.json(user);
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    throw new Error(error.message);
   }
 });
 
-// Get all users
-
-const getallUser = asyncHandler(async (req, res) => {
+const getAllUsers = asyncHandler(async (req, res) => {
   try {
-    const getUsers = await User.find().populate("wishlist");
-    res.json(getUsers);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-// Get a single user
-
-const getaUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  validateMongoDbId(id);
-
-  try {
-    const getaUser = await User.findById(id);
-    res.json({
-      getaUser,
+    const users = await User.findAll({
+      include: [
+        {
+          model: Wishlist, // modelo associado
+          as: "wishlist", // o alias usado na associação, ajuste conforme seu setup
+        },
+      ],
     });
+    res.json(users);
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    throw new Error(error.message);
   }
 });
 
-// get user profile section
+const getAUser = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  validateId(id);
+
+  try {
+    const user = await User.findByPk(id, {
+      include: [
+        {
+          model: Wishlist,
+          as: "wishlist",
+        },
+      ],
+    });
+
+    if (!user) {
+      res.status(404);
+      throw new Error("User not found");
+    }
+
+    res.json(user);
+  } catch (error) {
+    res.status(500);
+    throw new Error(error.message);
+  }
+});
+
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user.id).select("-password"); // Retorna os dados sem a senha
+  const user = await User.findByPk(req.user.id, {
+    attributes: { exclude: ['password'] },
+  });
 
   if (!user) {
     return res.status(404).json({ message: "Usuário não encontrado" });
@@ -272,370 +289,190 @@ const getUserProfile = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
-// Get a single user
-
-const deleteaUser = asyncHandler(async (req, res) => {
+const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
+  validateId(id);
 
   try {
-    const deleteaUser = await User.findByIdAndDelete(id);
-    res.json({
-      deleteaUser,
+    const deleted = await User.destroy({
+      where: { id }
     });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Usuário não encontrado para deletar" });
+    }
+
+    res.json({ message: "Usuário deletado com sucesso" });
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    throw new Error(error.message);
   }
 });
 
 const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
+  validateId(id);
 
   try {
-    const blockusr = await User.findByIdAndUpdate(
-      id,
-      {
-        isBlocked: true,
-      },
-      {
-        new: true,
-      }
+    // Atualiza o campo isBlocked para true
+    const [updatedRows] = await User.update(
+      { isBlocked: true },
+      { where: { id } }
     );
-    res.json(blockusr);
+
+    if (updatedRows === 0) {
+      return res.status(404).json({ message: "Usuário não encontrado para bloquear" });
+    }
+
+    // Buscar usuário atualizado para retorno
+    const blockedUser = await User.findByPk(id);
+    res.json(blockedUser);
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    throw new Error(error.message);
   }
 });
 
 const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
+  validateId(id);
 
   try {
-    const unblock = await User.findByIdAndUpdate(
-      id,
-      {
-        isBlocked: false,
-      },
-      {
-        new: true,
-      }
+    const [updatedRows] = await User.update(
+      { isBlocked: false },
+      { where: { id } }
     );
-    res.json({
-      message: "User UnBlocked",
-    });
+
+    if (updatedRows === 0) {
+      return res.status(404).json({ message: "Usuário não encontrado para desbloquear" });
+    }
+
+    const unblockedUser = await User.findByPk(id);
+    res.json({ message: "Usuário desbloqueado com sucesso", user: unblockedUser });
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    throw new Error(error.message);
   }
 });
 
 const updatePassword = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
+  const userId = req.user._id;
   const { password } = req.body;
-  validateMongoDbId(_id);
-  const user = await User.findById(_id);
-  if (password) {
-    user.password = password;
-    const updatedPassword = await user.save();
-    res.json(updatedPassword);
-  } else {
-    res.json(user);
+
+  validateId(userId);
+
+  if (!password) {
+    return res.status(400).json({ message: "Password is required" });
   }
+
+  // Buscar usuário
+  const user = await User.findByPk(userId);
+  if (!user) {
+    return res.status(404).json({ message: "Usuário não encontrado" });
+  }
+
+  // Atualizar senha com hash (supondo método setPassword no modelo Sequelize)
+  user.password = password; // se usa hook para hash no model
+  await user.save();
+
+  res.json({
+    message: "Senha atualizada com sucesso",
+    user: {
+      _id: user.id,  // Sequelize usa id por padrão
+      email: user.email,
+      firstname: user.firstname,
+      lastname: user.lastname,
+    },
+  });
 });
 
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) throw new Error("User not found with this email");
+
+  if (!email) {
+    return res.status(400).json({ message: "Email é obrigatório" });
+  }
+
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    return res.status(404).json({ message: "Usuário não encontrado com este email" });
+  }
+
   try {
+    // Supondo que o método createPasswordResetToken seja implementado no modelo User
     const token = await user.createPasswordResetToken();
     await user.save();
-    const resetURL = `Hi, Please follow this link to reset Your Password. This link is valid till 10 minutes from now. <a href='http://localhost:5000/api/user/reset-password/${token}'>Click Here</>`;
-    const data = {
+
+    const resetURL = `
+      Hi, Please follow this link to reset Your Password.
+      This link is valid for 10 minutes.
+      <a href="http://localhost:5000/api/user/reset-password/${token}">Click Here</a>
+    `;
+
+    const emailData = {
       to: email,
-      text: "Hey User",
+      text: "Password reset request",
       subject: "Forgot Password Link",
-      htm: resetURL,
+      html: resetURL,
     };
-    sendEmail(data);
-    res.json(token);
+
+    await sendEmail(emailData);
+
+    res.json({ message: "Link para resetar a senha enviado para o email", token });
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    throw new Error("Erro ao enviar email de recuperação: " + error.message);
   }
 });
 
 const resetPassword = asyncHandler(async (req, res) => {
   const { password } = req.body;
   const { token } = req.params;
+
+  if (!password) {
+    return res.status(400).json({ message: "Password é obrigatório" });
+  }
+
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  // Buscar usuário pelo token e que o token não tenha expirado
   const user = await User.findOne({
-    passwordResetToken: hashedToken,
-    passwordResetExpires: { $gt: Date.now() },
+    where: {
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { [Op.gt]: new Date() }, // Op.gt > now
+    },
   });
-  if (!user) throw new Error(" Token Expired, Please try again later");
-  user.password = password;
-  user.passwordResetToken = undefined;
-  user.passwordResetExpires = undefined;
+
+  if (!user) {
+    return res.status(400).json({ message: "Token expirado ou inválido. Por favor, tente novamente." });
+  }
+
+  // Atualizar senha e limpar campos de reset
+  user.password = password;  // Hash via hook do model Sequelize
+  user.passwordResetToken = null;
+  user.passwordResetExpires = null;
+
   await user.save();
-  res.json(user);
-});
 
-const getWishlist = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  try {
-    const findUser = await User.findById(_id).populate("wishlist");
-    res.json(findUser);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const userCart = asyncHandler(async (req, res) => {
-  const { cart } = req.body;
-  const { _id } = req.user;
-  validateMongoDbId(_id);
-  try {
-    let products = [];
-    const user = await User.findById(_id);
-    // check if user already have product in cart
-    const alreadyExistCart = await Cart.findOne({ orderby: user._id });
-    if (alreadyExistCart) {
-      alreadyExistCart.remove();
-    }
-    for (let i = 0; i < cart.length; i++) {
-      let object = {};
-      object.product = cart[i]._id;
-      object.count = cart[i].count;
-      object.color = cart[i].color;
-      let getPrice = await Product.findById(cart[i]._id).select("price").exec();
-      object.price = getPrice.price;
-      products.push(object);
-    }
-    let cartTotal = 0;
-    for (let i = 0; i < products.length; i++) {
-      cartTotal = cartTotal + products[i].price * products[i].count;
-    }
-    let newCart = await new Cart({
-      products,
-      cartTotal,
-      orderby: user?._id,
-    }).save();
-    res.json(newCart);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const getUserCart = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  validateMongoDbId(_id);
-  try {
-    const cart = await Cart.findOne({ orderby: _id }).populate(
-      "products.product"
-    );
-    res.json(cart);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const emptyCart = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  validateMongoDbId(_id);
-  try {
-    const user = await User.findOne({ _id });
-    const cart = await Cart.findOneAndRemove({ orderby: user._id });
-    res.json(cart);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const applyCoupon = asyncHandler(async (req, res) => {
-  const { coupon } = req.body;
-  const { _id } = req.user;
-  validateMongoDbId(_id);
-  const validCoupon = await Coupon.findOne({ name: coupon });
-  if (validCoupon === null) {
-    throw new Error("Invalid Coupon");
-  }
-  const user = await User.findOne({ _id });
-  let { cartTotal } = await Cart.findOne({
-    orderby: user._id,
-  }).populate("products.product");
-  let totalAfterDiscount = (
-    cartTotal -
-    (cartTotal * validCoupon.discount) / 100
-  ).toFixed(2);
-  await Cart.findOneAndUpdate(
-    { orderby: user._id },
-    { totalAfterDiscount },
-    { new: true }
-  );
-  res.json(totalAfterDiscount);
-});
-
-const createOrder = asyncHandler(async (req, res) => {
-  const { COD, couponApplied } = req.body;
-  const { _id } = req.user;
-  validateMongoDbId(_id);
-  try {
-    if (!COD) throw new Error("Create cash order failed");
-    const user = await User.findById(_id);
-    let userCart = await Cart.findOne({ orderby: user._id });
-    let finalAmout = 0;
-    if (couponApplied && userCart.totalAfterDiscount) {
-      finalAmout = userCart.totalAfterDiscount;
-    } else {
-      finalAmout = userCart.cartTotal;
-    }
-
-    let newOrder = await new Order({
-      products: userCart.products,
-      paymentIntent: {
-        id: uniqid(),
-        method: "COD",
-        amount: finalAmout,
-        status: "Cash on Delivery",
-        created: Date.now(),
-        currency: "usd",
-      },
-      orderby: user._id,
-      orderStatus: "Cash on Delivery",
-    }).save();
-    let update = userCart.products.map((item) => {
-      return {
-        updateOne: {
-          filter: { _id: item.product._id },
-          update: { $inc: { quantity: -item.count, sold: +item.count } },
-        },
-      };
-    });
-    const updated = await Product.bulkWrite(update, {});
-    res.json({ message: "success" });
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const getOrders = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  validateMongoDbId(_id);
-  try {
-    const userorders = await Order.findOne({ orderby: _id })
-      .populate("products.product")
-      .populate("orderby")
-      .exec();
-    res.json(userorders);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const getAllOrders = asyncHandler(async (req, res) => {
-  try {
-    const alluserorders = await Order.find()
-      .populate("products.product")
-      .populate("orderby")
-      .exec();
-    res.json(alluserorders);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-const getOrderByUserId = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  validateMongoDbId(id);
-  try {
-    const userorders = await Order.findOne({ orderby: id })
-      .populate("products.product")
-      .populate("orderby")
-      .exec();
-    res.json(userorders);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const updateOrderStatus = asyncHandler(async (req, res) => {
-  const { status } = req.body;
-  const { id } = req.params;
-  validateMongoDbId(id);
-  try {
-    const updateOrderStatus = await Order.findByIdAndUpdate(
-      id,
-      {
-        orderStatus: status,
-        paymentIntent: {
-          status: status,
-        },
-      },
-      { new: true }
-    );
-    res.json(updateOrderStatus);
-  } catch (error) {
-    throw new Error(error);
-  }
-});
-
-const uploadImagesUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  validateMongoDbId(id);
-  try {
-    const uploader = (path) => cloudinaryUploadImg(path, "images");
-    const urls = [];
-    const files = req.body.images;
-    for (const file of files) {
-      const { path } = file;
-      const newpath = await uploader(path);
-      console.log(newpath);
-      urls.push(newpath);
-      fs.unlinkSync(path);
-    }
-    const findUser = await User.findByIdAndUpdate(
-      id,
-      {
-        images: urls.map((file) => {
-          return file;
-        }),
-      },
-      {
-        new: true,
-      }
-    );
-    res.json(findUser);
-  } catch (error) {
-    throw new Error(error);
-  }
+  res.json({ message: "Senha resetada com sucesso" });
 });
 
 module.exports = {
   createUser,
+  loginHandler,
   loginUserCtrl,
-  getallUser,
-  getaUser,
-  getUserProfile,
-  deleteaUser,
-  updatedUser,
-  blockUser,
-  unblockUser,
+  loginAdmin,
   handleRefreshToken,
   logout,
   updatePassword,
+  saveAddress,
+  getAllUsers,
+  getAUser,
+  getUserProfile,
+  deleteUser,
+  updatedUser,
+  blockUser,
+  unblockUser,
   forgotPasswordToken,
   resetPassword,
-  loginAdmin,
-  getWishlist,
-  saveAddress,
-  userCart,
-  getUserCart,
-  emptyCart,
-  applyCoupon,
-  createOrder,
-  getOrders,
-  updateOrderStatus,
-  getAllOrders,
-  getOrderByUserId,
-  uploadImagesUser,
 };

@@ -1,26 +1,22 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-// Declare the Schema of the Mongo model
-var brandSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-    },
-    images: [
-      {
-        public_id: String,
-        url: String,
-      },
-    ],
+class Brand extends Model { }
+
+Brand.init({
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
+  images: {
+    type: DataTypes.JSON, // ou STRING se for um único path
+    allowNull: true,
+  },
+}, {
+  sequelize,
+  modelName: "Brand",
+  tableName: "brands",
+  timestamps: true,
+});
 
-  {
-    timestamps: true,
-  }
-);
-
-//Export the model
-module.exports = mongoose.model("Brand", brandSchema);
+module.exports = Brand;

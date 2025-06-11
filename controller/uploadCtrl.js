@@ -9,20 +9,10 @@ const {
 
 const uploadsImages = asyncHandler(async (req, res, next) => {
   try {
-    // console.log("🔍 DEBUG - Imagens Recebidas:", req.body);
-    // if (
-    //   // !req.body.images ||
-    //   Array.isArray(req.body.images) ? req.body.images : [req.body.images]
-    //   // ||
-    //   // req.body.images.length === 0
-    // ) {
-    //   return res.status(400).json({ message: "Nenhuma imagem enviada" });
-    // }
     const images = Array.isArray(req.body.images)
       ? req.body.images
       : [req.body.images];
 
-    // Processar todas as imagens em paralelo
     const imageUrls = await Promise.all(
       images.map(async (imageBase64) => {
         if (!imageBase64.startsWith("data:image")) {
@@ -30,10 +20,14 @@ const uploadsImages = asyncHandler(async (req, res, next) => {
           throw new Error("Formato de imagem inválido");
         }
 
-        const base64Data = imageBase64.replace(/^data:image\/\w+;base64,/, "");
+        const base64Data = imageBase64.match(/^data:image\/(\w+);base64,/);
         const buffer = Buffer.from(base64Data, "base64");
-        const fileName = `upload-${Date.now()}.png`;
+        const extension = base64Data?.[1] || 'png';
+        const fileName = `upload-${Date.now()}.${extension}`;
         const tempPath = path.join(__dirname, "../public/images/", fileName);
+        if (!fs.existsSync(tempPath)) {
+  fs.mkdirSync(tempPath, { recursive: true });
+}
 
         // Salva a imagem no servidor temporariamente
         fs.writeFileSync(tempPath, buffer);
@@ -65,7 +59,7 @@ const uploadsImages = asyncHandler(async (req, res, next) => {
 const deleteImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
-    const deleted = cloudinaryDeleteImg(id, "images");
+    const deleted = await  cloudinaryDeleteImg(id, "images");
     res.json({ message: "Deleted" });
   } catch (error) {
     throw new Error(error);

@@ -1,58 +1,65 @@
 const asyncHandler = require("express-async-handler");
-const Category = require("../models/prodcategoryModel.js");
-const validateMongoDbId = require("../utils/validateMongodbId");
+const { Category } = require("../models"); // Sequelize Category model
 
 const createCategory = asyncHandler(async (req, res) => {
   try {
     const newCategory = await Category.create(req.body);
-    res.json(newCategory);
+    res.status(201).json(newCategory);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
 
 const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const updatedCategory = await Category.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.json(updatedCategory);
+    const category = await Category.findByPk(id);
+    if (!category) {
+      return res.status(404).json({ message: "Categoria não encontrada" });
+    }
+    await category.update(req.body);
+    res.json(category);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
 
 const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const deletedCategory = await Category.findByIdAndDelete(id);
-    res.json(deletedCategory);
+    const category = await Category.findByPk(id);
+    if (!category) {
+      return res.status(404).json({ message: "Categoria não encontrada" });
+    }
+    await category.destroy();
+    res.json({ message: "Categoria deletada com sucesso" });
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
+
 const getCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const getaCategory = await Category.findById(id);
-    res.json(getaCategory);
+    const category = await Category.findByPk(id);
+    if (!category) {
+      return res.status(404).json({ message: "Categoria não encontrada" });
+    }
+    res.json(category);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
 
 const getallCategory = asyncHandler(async (req, res) => {
   try {
-    const getallCategory = await Category.find();
-    res.json(getallCategory);
+    const categories = await Category.findAll();
+    res.json(categories);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
+
 module.exports = {
   createCategory,
   updateCategory,

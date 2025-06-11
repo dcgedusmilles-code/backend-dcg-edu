@@ -1,27 +1,38 @@
-// Upload.js
-const mongoose = require("mongoose");
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect"); // conexão Sequelize
 
-const UploadSchema = new mongoose.Schema({
-  fileName: {
-    type: String,
-    required: true,
-  },
-  fileExt: {
-    type: String,
-    required: true,
-  },
-  file: {
-    type: String,
-    required: true,
-  },
-  // file: {
-  //   data: Buffer,
-  //   contentType: String,
-  // },
-  // uploadTime: {
-  //   type: Date,
-  //   default: Date.now,
-  // },
-});
+class Upload extends Model {}
 
-module.exports = Upload = mongoose.model("Upload", UploadSchema);
+Upload.init(
+  {
+    fileName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    fileExt: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    file: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    // Se quiser armazenar o conteúdo do arquivo (como no campo comentado):
+    // file: {
+    //   type: DataTypes.BLOB("long"), // ou 'medium' / 'tiny'
+    //   allowNull: false,
+    // },
+    // uploadTime: {
+    //   type: DataTypes.DATE,
+    //   defaultValue: DataTypes.NOW,
+    // },
+  },
+  {
+    sequelize,
+    modelName: "Upload",
+    tableName: "uploads",
+    timestamps: true, // inclui createdAt e updatedAt
+  }
+);
+
+module.exports = Upload;

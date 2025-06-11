@@ -1,22 +1,27 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-// Declare the Schema of the Mongo model
-var couponSchema = new mongoose.Schema({
+class Coupon extends Model { }
+
+Coupon.init({
   name: {
-    type: String,
-    required: true,
-    unique: true,
-    uppercase: true,
-  },
-  expiry: {
-    type: Date,
-    required: true,
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   discount: {
-    type: Number,
-    required: true,
+    type: DataTypes.FLOAT,
+    allowNull: false,
   },
+  expiry: {
+    type: DataTypes.DATE,
+    allowNull: false,
+  },
+}, {
+  sequelize,
+  modelName: "Coupon",
+  tableName: "coupons",
+  timestamps: true,
 });
 
-//Export the model
-module.exports = mongoose.model("Coupon", couponSchema);
+module.exports = Coupon;
+

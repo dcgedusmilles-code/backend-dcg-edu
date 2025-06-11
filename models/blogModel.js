@@ -1,64 +1,19 @@
-const mongoose = require("mongoose"); // Erase if already required
+// models/blogModel.js
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-const Schema = mongoose.Schema;
-
-// Declare the Schema of the Mongo model
-var blogSchema = new Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-    },
-    description: {
-      type: mongoose.Schema.Types.Mixed,
-      required: true,
-    },
-    category: {
-      type: Schema.Types.ObjectId,
-      ref: "BCategory",
-      required: true,
-    },
-    numViews: {
-      type: Number,
-      default: 0,
-    },
-    isLiked: {
-      type: Boolean,
-      default: false,
-    },
-    isDisliked: {
-      type: Boolean,
-      default: false,
-    },
-    likes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    dislikes: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-
-    author: {
-      type: String,
-      default: "Admin",
-    },
-    images: [],
-  },
-  {
-    toJSON: {
-      virtuals: true,
-    },
-    toObject: {
-      virtuals: true,
-    },
-    timestamps: true,
-  }
-);
-
-//Export the model
-module.exports = mongoose.model("Blog", blogSchema);
+class Blog extends Model { }
+Blog.init({
+  title: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.TEXT, allowNull: false },
+  numViews: { type: DataTypes.INTEGER, defaultValue: 0 },
+  categoryId: { type: DataTypes.INTEGER, allowNull: false },
+  author: { type: DataTypes.STRING },
+  images: { type: DataTypes.JSON },
+}, {
+  sequelize,
+  modelName: "Blog",
+  tableName: "blogs",
+  timestamps: true,
+});
+module.exports = Blog;
