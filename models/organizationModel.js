@@ -1,47 +1,36 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model, Sequelize } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-// Declare the Schema of the Mongo model
-var organiationSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: true,
-    },
-    nif: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    mobile: {
-      type: String,
-      required: true,
-      unique: true,
-    },
+class Organization extends Model { }
+Organization.Sequelize = Sequelize; // necessário para usar Sequelize.Op no controller
 
-    about:{
-        type:String,
-    },
-
-    logo:{type:String},
- 
-    address: {
-      type: String,
-    },
-  
-  
+Organization.init({
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-  {
-    timestamps: true,
+  email: {
+    type: DataTypes.STRING,
+    unique: true,
+    validate: { isEmail: true }
+  },
+  nif: {
+    type: DataTypes.STRING,
+    unique: true,
+  },
+  mobile: {
+    type: DataTypes.STRING,
+    unique: true,
+  },
+  address: {
+    type: DataTypes.STRING,
   }
-);
+}, {
+  sequelize,
+  modelName: "Organization",
+  tableName: "organizations",
+  timestamps: true,
+  underscored: true,
+});
 
-organiationSchema.pre("save", async function (next) {});
-
-
-
-//Export the model
-module.exports = mongoose.model("Organization", organiationSchema);
+module.exports = Organization;

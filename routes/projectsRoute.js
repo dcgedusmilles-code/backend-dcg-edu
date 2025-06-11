@@ -2,18 +2,29 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getAllProjects,
   createProject,
-  getProject,
   updateProject,
+  getProject,
+  getAllProjects,
   deleteProject,
-} = require("../controller/projectController/projectCtrl");
+} = require("../controller/projectCtrl");
 
-const { isAdmin, authMiddleware } = require("../middlewares/authMiddleware");
-router.post("/", authMiddleware, isAdmin, createProject);
-router.get("/:id", getProject);
-router.put("/:id", authMiddleware, isAdmin, updateProject);
+const checkPermission = require("../middlewares/checkPermission");
+const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+const { resizeAndSaveImage, uploadPhoto } = require("../middlewares/uploadImage");
+
+router.post(
+  "/",
+  authMiddleware,
+  checkPermission("create"),
+  uploadPhoto.array("images", 10),
+  resizeAndSaveImage,
+  createProject
+);
+
+router.put("/:id", authMiddleware, checkPermission("update"), updateProject);
+router.get("/:id", authMiddleware, checkPermission("read"), getProject);
+router.get("/", authMiddleware, checkPermission("read"), getAllProjects);
 router.delete("/:id", authMiddleware, isAdmin, deleteProject);
-router.get("/", getAllProjects);
 
 module.exports = router;

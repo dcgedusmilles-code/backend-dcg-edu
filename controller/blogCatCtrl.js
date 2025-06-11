@@ -1,57 +1,64 @@
 const asyncHandler = require("express-async-handler");
-const Category = require("../models/blogCatModel");
-const validateMongoDbId = require("../utils/validateMongodbId");
+const BlogCategory = require("../models/blogCategoryModel");
 
+// Criar nova categoria
 const createCategory = asyncHandler(async (req, res) => {
   try {
-    const newCategory = await Category.create(req.body);
-    res.json(newCategory);
+    const newCategory = await BlogCategory.create(req.body);
+    res.status(201).json(newCategory);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({ message: error.message });
   }
 });
 
+// Atualizar categoria
 const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const updatedCategory = await Category.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.json(updatedCategory);
+    const category = await BlogCategory.findByPk(id);
+    if (!category) return res.status(404).json({ message: "Categoria não encontrada." });
+
+    await category.update(req.body);
+    res.json(category);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({ message: error.message });
   }
 });
 
+// Deletar categoria
 const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const deletedCategory = await Category.findByIdAndDelete(id);
-    res.json(deletedCategory);
+    const category = await BlogCategory.findByPk(id);
+    if (!category) return res.status(404).json({ message: "Categoria não encontrada." });
+
+    await category.destroy();
+    res.json({ message: "Categoria deletada com sucesso." });
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({ message: error.message });
   }
 });
 
+// Obter uma categoria por ID
 const getCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const getaCategory = await Category.findById(id);
-    res.json(getaCategory);
+    const category = await BlogCategory.findByPk(id);
+    if (!category) return res.status(404).json({ message: "Categoria não encontrada." });
+
+    res.json(category);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({ message: error.message });
   }
 });
 
+// Obter todas as categorias
 const getallCategory = asyncHandler(async (req, res) => {
   try {
-    const getallCategory = await Category.find();
-    res.json(getallCategory);
+    const categories = await BlogCategory.findAll({ order: [["createdAt", "DESC"]] });
+    res.json(categories);
   } catch (error) {
-    throw new Error(error);
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -62,3 +69,4 @@ module.exports = {
   getCategory,
   getallCategory,
 };
+

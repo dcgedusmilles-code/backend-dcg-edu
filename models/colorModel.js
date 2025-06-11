@@ -1,19 +1,22 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-// Declare the Schema of the Mongo model
-var colorSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      unique: true,
-      index: true,
-    },
+class Color extends Model { }
+
+Color.init({
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
-  {
-    timestamps: true,
-  }
-);
+  hex: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+}, {
+  sequelize,
+  modelName: "Color",
+  tableName: "colors",
+  timestamps: true,
+});
 
-//Export the model
-module.exports = mongoose.model("Color", colorSchema);
+module.exports = Color;

@@ -7,20 +7,14 @@ const {
   uploadPhoto,
 } = require("./../middlewares/uploadImage");
 const checkPermission = require("./../middlewares/checkPermission");
+
 const {
   createService,
   getAllService,
   getOneService,
   updateService,
   deleteService,
-} = require("../controller/serviceController/ServiceCtrl");
-const {
-  createServiceCategory,
-  getAllCategory,
-  getOneServiceCategory,
-  updateCategoryService,
-  deleteCategoryService,
-} = require("./../controller/serviceController/serviceCategory");
+} = require("../controller/serviceCtrl");
 
 //Service routes
 router.post(
@@ -42,36 +36,6 @@ router.put(
 );
 router.delete("/:id", authMiddleware, checkPermission("delete"), deleteService);
 
-//Category service route
-router.post(
-  "/category",
-  authMiddleware,
-  checkPermission("create"),
-  createServiceCategory
-);
-router.get(
-  "/category",
-  authMiddleware,
-  checkPermission("read"),
-  getAllCategory
-);
-router.get(
-  "/category/:id",
-  authMiddleware,
-  checkPermission("read"),
-  getOneServiceCategory
-);
-router.put(
-  "/category/:id",
-  authMiddleware,
-  checkPermission("update"),
-  updateCategoryService
-);
-router.delete(
-  "/category/:id",
-  authMiddleware,
-  checkPermission("delete"),
-  deleteCategoryService
-);
+
 
 module.exports = router;

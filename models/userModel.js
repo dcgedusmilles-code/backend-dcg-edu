@@ -1,80 +1,103 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-// Declare the Schema of the Mongo model
-var userSchema = new mongoose.Schema(
+const sequelize = require("../config/dbConnect");
+
+class User extends Model {
+  async isPasswordMatched(enteredPassword) {
+    return await bcrypt.compare(enteredPassword, this.password);
+  }
+
+  createPasswordResetToken() {
+    const resettoken = crypto.randomBytes(32).toString("hex");
+    this.passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resettoken)
+      .digest("hex");
+    this.passwordResetExpires = Date.now() + 30 * 60 * 1000; // 30 minutos
+    return resettoken;
+  }
+}
+
+User.init(
   {
     firstname: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     lastname: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
+      validate: {
+        isEmail: true,
+      },
     },
     mobile: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
       unique: true,
     },
     password: {
-      type: String,
-      required: true,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
-    images: [],
+    images: {
+      type: DataTypes.JSON,
+      defaultValue: [],
+    },
     role: {
-      type: String,
-      default: "user",
+      type: DataTypes.STRING,
+      defaultValue: "user",
     },
     isBlocked: {
-      type: Boolean,
-      default: false,
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
     cart: {
-      type: Array,
-      default: [],
+      type: DataTypes.JSON,
+      defaultValue: [],
     },
     address: {
-      type: String,
+      type: DataTypes.STRING,
     },
-    wishlist: [{ type: mongoose.Schema.Types.ObjectId, ref: "Product" }],
     refreshToken: {
-      type: String,
+      type: DataTypes.STRING,
     },
-    passwordChangedAt: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
+    passwordChangedAt: {
+      type: DataTypes.DATE,
+    },
+    passwordResetToken: {
+      type: DataTypes.STRING,
+    },
+    passwordResetExpires: {
+      type: DataTypes.DATE,
+    },
   },
   {
+    sequelize,
+    modelName: "User",
+    tableName: "users",
     timestamps: true,
+    hooks: {
+      beforeCreate: async (user) => {
+        if (user.password) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+      beforeUpdate: async (user) => {
+        if (user.changed("password")) {
+          const salt = await bcrypt.genSalt(10);
+          user.password = await bcrypt.hash(user.password, salt);
+        }
+      },
+    },
   }
 );
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    next();
-  }
-  const salt = await bcrypt.genSaltSync(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-userSchema.methods.isPasswordMatched = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-userSchema.methods.createPasswordResetToken = async function () {
-  const resettoken = crypto.randomBytes(32).toString("hex");
-  this.passwordResetToken = crypto
-    .createHash("sha256")
-    .update(resettoken)
-    .digest("hex");
-  this.passwordResetExpires = Date.now() + 30 * 60 * 1000; // 10 minutes
-  return resettoken;
-};
-
-//Export the model
-module.exports = mongoose.model("User", userSchema);
+module.exports = User;

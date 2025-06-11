@@ -1,55 +1,68 @@
-const asynHandler = require("express-async-handler");
+const asyncHandler = require("express-async-handler");
 const Coupon = require("../models/couponModel");
-const validateMongoDbId = require("../utils/validateMongodbId");
 
-const createCoupon = asynHandler(async (req, res) => {
+// Criar cupom
+const createCoupon = asyncHandler(async (req, res) => {
   try {
     const newCoupon = await Coupon.create(req.body);
-    res.json(newCoupon);
+    res.status(201).json(newCoupon);
   } catch (error) {
     throw new Error(error);
   }
 });
-const getAllCoupons = asynHandler(async (req, res) => {
+
+// Buscar todos os cupons
+const getAllCoupons = asyncHandler(async (req, res) => {
   try {
-    const coupons = await Coupon.find();
-    res.json(coupons);
+    const coupons = await Coupon.findAll();
+    res.status(200).json(coupons);
   } catch (error) {
     throw new Error(error);
   }
 });
-const updateCoupon = asynHandler(async (req, res) => {
+
+// Atualizar cupom
+const updateCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const updatecoupon = await Coupon.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.json(updatecoupon);
+    await Coupon.update(req.body, { where: { id } });
+    const updatedCoupon = await Coupon.findByPk(id);
+    res.status(200).json(updatedCoupon);
   } catch (error) {
     throw new Error(error);
   }
 });
-const deleteCoupon = asynHandler(async (req, res) => {
+
+// Deletar cupom
+const deleteCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const deletecoupon = await Coupon.findByIdAndDelete(id);
-    res.json(deletecoupon);
+    const deleted = await Coupon.destroy({ where: { id } });
+    if (deleted) {
+      res.status(200).json({ message: "Cupom deletado com sucesso." });
+    } else {
+      res.status(404).json({ message: "Cupom não encontrado." });
+    }
   } catch (error) {
     throw new Error(error);
   }
 });
-const getCoupon = asynHandler(async (req, res) => {
+
+// Buscar cupom por ID
+const getCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const getAcoupon = await Coupon.findById(id);
-    res.json(getAcoupon);
+    const coupon = await Coupon.findByPk(id);
+    if (coupon) {
+      res.status(200).json(coupon);
+    } else {
+      res.status(404).json({ message: "Cupom não encontrado." });
+    }
   } catch (error) {
     throw new Error(error);
   }
 });
+
 module.exports = {
   createCoupon,
   getAllCoupons,

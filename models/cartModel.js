@@ -1,30 +1,23 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-// Declare the Schema of the Mongo model
-var cartSchema = new mongoose.Schema(
+class Cart extends Model {}
+
+Cart.init(
   {
-    products: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-        },
-        count: Number,
-        color: String,
-        price: Number,
-      },
-    ],
-    cartTotal: Number,
-    totalAfterDiscount: Number,
-    orderby: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    cartTotal: {
+      type: DataTypes.FLOAT,
+    },
+    totalAfterDiscount: {
+      type: DataTypes.FLOAT,
     },
   },
   {
+    sequelize,
+    modelName: "Cart",
+    tableName: "carts",
     timestamps: true,
   }
 );
 
-//Export the model
-module.exports = mongoose.model("Cart", cartSchema);
+module.exports = Cart;

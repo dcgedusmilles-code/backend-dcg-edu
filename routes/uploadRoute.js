@@ -5,8 +5,7 @@ const { uploadsImages, deleteImages } = require("../controller/uploadCtrl");
 const { isAdmin, authMiddleware } = require("../middlewares/authMiddleware");
 const {
   uploadPhoto,
-  productImgResize,
-  brandImgResize,
+  resizeAndSaveImage,
 } = require("../middlewares/uploadImage");
 
 router.post(

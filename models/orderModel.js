@@ -1,40 +1,31 @@
-const mongoose = require("mongoose"); // Erase if already required
+const { DataTypes, Model } = require("sequelize");
+const sequelize = require("../config/dbConnect");
 
-// Declare the Schema of the Mongo model
-var orderSchema = new mongoose.Schema(
+class Order extends Model {}
+
+Order.init(
   {
-    products: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
-        },
-        count: Number,
-        color: String,
-      },
-    ],
-    paymentIntent: {},
+    paymentIntent: {
+      type: DataTypes.JSON, // ou TEXT se preferir serializar manualmente
+    },
     orderStatus: {
-      type: String,
-      default: "Not Processed",
-      enum: [
+      type: DataTypes.ENUM(
         "Not Processed",
         "Cash on Delivery",
         "Processing",
         "Dispatched",
         "Cancelled",
-        "Delivered",
-      ],
-    },
-    orderby: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+        "Delivered"
+      ),
+      defaultValue: "Not Processed",
     },
   },
   {
+    sequelize,
+    modelName: "Order",
+    tableName: "orders",
     timestamps: true,
   }
 );
 
-//Export the model
-module.exports = mongoose.model("Order", orderSchema);
+module.exports = Order;

@@ -1,90 +1,82 @@
 const asyncHandler = require("express-async-handler");
 const Brand = require("../models/brandModel");
-const validateMongoDbId = require("../utils/validateMongodbId");
+const fs = require("fs");
+const { cloudinaryUploadImg } = require("../utils/cloudinary");
 
 const createBrand = asyncHandler(async (req, res) => {
   try {
-    const newBrand = await Brand.create({
-      title: req.body.title,
-      images: req.body.images,
-    });
-    res.json(newBrand);
-    console.log(newBrand);
+    const { title, images } = req.body;
+    const newBrand = await Brand.create({ title, images });
+    res.status(201).json(newBrand);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
 
 const updateBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const updatedBrand = await Brand.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.json(updatedBrand);
+    await Brand.update(req.body, { where: { id } });
+    const updatedBrand = await Brand.findByPk(id);
+    if (!updatedBrand) return res.status(404).json({ message: "Marca não encontrada." });
+    res.status(200).json(updatedBrand);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
 
 const deleteBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const deletedBrand = await Brand.findByIdAndDelete(id);
-    res.json(deletedBrand);
+    const deleted = await Brand.destroy({ where: { id } });
+    if (!deleted) return res.status(404).json({ message: "Marca não encontrada." });
+    res.status(200).json({ message: "Marca excluída com sucesso." });
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
+
 const getBrand = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
-    const getaBrand = await Brand.findById(id);
-    res.json(getaBrand);
+    const brand = await Brand.findByPk(id);
+    if (!brand) return res.status(404).json({ message: "Marca não encontrada." });
+    res.status(200).json(brand);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
+
 const getallBrand = asyncHandler(async (req, res) => {
   try {
-    const getallBrand = await Brand.find();
-    res.json(getallBrand);
+    const brands = await Brand.findAll();
+    res.status(200).json(brands);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
 
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  validateMongoDbId(id);
   try {
     const uploader = (path) => cloudinaryUploadImg(path, "images");
     const urls = [];
-    const files = req.files;
-    for (const file of files) {
-      const { path } = file;
-      const newpath = await uploader(path);
-      console.log(newpath);
+
+    for (const file of req.files) {
+      const newpath = await uploader(file.path);
       urls.push(newpath);
-      fs.unlinkSync(path);
+      fs.unlinkSync(file.path);
     }
-    const findBlog = await Blog.findByIdAndUpdate(
-      id,
-      {
-        images: urls.map((file) => {
-          return file;
-        }),
-      },
-      {
-        new: true,
-      }
+
+    await Brand.update(
+      { images: urls },
+      { where: { id } }
     );
-    res.json(findBlog);
+
+    const updatedBrand = await Brand.findByPk(id);
+    res.status(200).json(updatedBrand);
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.message);
   }
 });
 
@@ -96,3 +88,4 @@ module.exports = {
   getallBrand,
   uploadImages,
 };
+

@@ -3,12 +3,12 @@ const router = express.Router();
 
 const {
   createProduct,
-  getaProduct,
-  getAllProduct,
   updateProduct,
   deleteProduct,
+  getaProduct,
+  getAllProduct,
   addToWishlist,
-  rating,
+  rating
 } = require("../controller/productCtrl");
 
 const { isAdmin, authMiddleware } = require("../middlewares/authMiddleware");

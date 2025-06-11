@@ -23,6 +23,7 @@ const cloudinaryUploadImg = async (fileToUploads) => {
     });
   });
 };
+
 const cloudinaryDeleteImg = async (fileToDelete) => {
   return new Promise((resolve) => {
     cloudinary.uploader.destroy(fileToDelete, (result) => {

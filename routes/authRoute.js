@@ -3,59 +3,55 @@ const router = express.Router();
 
 const {
   createUser,
+  loginHandler,
   loginUserCtrl,
-  getallUser,
-  getaUser,
-  getUserProfile,
-  deleteaUser,
-  updatedUser,
-  blockUser,
-  unblockUser,
+  loginAdmin,
   handleRefreshToken,
   logout,
   updatePassword,
+  saveAddress,
+  getAllUsers,
+  getAUser,
+  getUserProfile,
+  deleteUser,
+  updatedUser,
+  blockUser,
+  unblockUser,
   forgotPasswordToken,
   resetPassword,
-  loginAdmin,
-  getWishlist,
-  saveAddress,
-  userCart,
-  getUserCart,
-  emptyCart,
-  applyCoupon,
-  createOrder,
-  getOrders,
-  updateOrderStatus,
-  getAllOrders,
+  // getWishlist,
+  // userCart,
+  // getUserCart,
+  // emptyCart,
+  // applyCoupon,
+  // createOrder,
+  // getOrders,
+  // updateOrderStatus,
+  // getAllOrders,
   uploadImagesUser,
 } = require("../controller/userCtrl");
 
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
+
 router.post("/register", createUser);
 router.post("/forgot-password-token", forgotPasswordToken);
-
 router.put("/reset-password/:token", resetPassword);
-
-router.put("/password", authMiddleware, updatePassword);
 router.post("/login", loginUserCtrl);
 router.post("/admin-login", loginAdmin);
-router.post("/cart", authMiddleware, userCart);
-router.post("/cart/applycoupon", authMiddleware, applyCoupon);
-router.post("/cart/cash-order", authMiddleware, createOrder);
+router.get("/all-users", getAllUsers);
+router.get("/refresh", handleRefreshToken);
+router.get("/logout", logout);
+
+
 // Rota protegida com autenticação
+router.put("/password", authMiddleware, updatePassword);
 router.get("/profile", authMiddleware, getUserProfile);
-router.get("/all-users", getallUser);
 router.get("/get-orders", authMiddleware, getOrders);
 router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
 router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getAllOrders);
-router.get("/refresh", handleRefreshToken);
-router.get("/logout", logout);
 router.get("/wishlist", authMiddleware, getWishlist);
-router.get("/cart", authMiddleware, getUserCart);
-
-router.get("/:id", authMiddleware, isAdmin, getaUser);
-router.delete("/empty-cart", authMiddleware, emptyCart);
-router.delete("/:id", deleteaUser);
+router.delete("/:id", authMiddleware, isAdmin, deleteUser);
+router.get("/:id", authMiddleware, isAdmin, getAUser);
 router.put(
   "/order/update-order/:id",
   authMiddleware,
