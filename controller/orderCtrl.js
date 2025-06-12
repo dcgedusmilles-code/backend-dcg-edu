@@ -6,7 +6,7 @@ const Product = require("../models/productModel");
 const Cart = require("../models/cartModel");
 const Coupon = require("../models/couponModel");
 const Order = require("../models/orderModel");
-const validateId = require("../utils/validateId");
+const validateId = require("../utils/validateRegisterId");
 
 
 const getWishlist = asyncHandler(async (req, res) => {
@@ -178,34 +178,6 @@ const createOrder = asyncHandler(async (req, res) => {
 
     res.json({ message: "Pedido criado com sucesso" });
 
-  } catch (error) {
-    res.status(500);
-    throw new Error(error.message);
-  }
-});
-
-const getOrders = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
-  validateId(userId);
-
-  try {
-    const userOrders = await Order.findAll({
-      where: { orderby: userId },
-      include: [
-        {
-          model: Product,
-          as: "products",
-          through: { attributes: ["count"] }, // quantidade na relação
-        },
-        {
-          model: User,
-          as: "orderby",
-          attributes: ["id", "firstname", "lastname", "email"],
-        },
-      ],
-    });
-
-    res.json(userOrders);
   } catch (error) {
     res.status(500);
     throw new Error(error.message);
@@ -392,7 +364,6 @@ module.exports = {
   emptyCart,
   applyCoupon,
   createOrder,
-  getOrders,
   updateOrderStatus,
   getAllOrders,
   getOrderByUserId,

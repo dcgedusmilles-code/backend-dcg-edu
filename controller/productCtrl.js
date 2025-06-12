@@ -3,7 +3,7 @@
 const asyncHandler = require("express-async-handler");
 const slugify = require("slugify");
 const { Product, User } = require("../models"); // ajuste conforme seu caminho
-const { validateId } = require("../utils/validateId");
+const validateId = require("../utils/validateRegisterId");
 const { Op } = require("sequelize");
 
 // Criar Produto

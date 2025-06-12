@@ -19,15 +19,6 @@ const {
   unblockUser,
   forgotPasswordToken,
   resetPassword,
-  // getWishlist,
-  // userCart,
-  // getUserCart,
-  // emptyCart,
-  // applyCoupon,
-  // createOrder,
-  // getOrders,
-  // updateOrderStatus,
-  // getAllOrders,
   uploadImagesUser,
 } = require("../controller/userCtrl");
 
@@ -46,19 +37,8 @@ router.get("/logout", logout);
 // Rota protegida com autenticação
 router.put("/password", authMiddleware, updatePassword);
 router.get("/profile", authMiddleware, getUserProfile);
-router.get("/get-orders", authMiddleware, getOrders);
-router.get("/getallorders", authMiddleware, isAdmin, getAllOrders);
-router.post("/getorderbyuser/:id", authMiddleware, isAdmin, getAllOrders);
-router.get("/wishlist", authMiddleware, getWishlist);
 router.delete("/:id", authMiddleware, isAdmin, deleteUser);
 router.get("/:id", authMiddleware, isAdmin, getAUser);
-router.put(
-  "/order/update-order/:id",
-  authMiddleware,
-  isAdmin,
-  updateOrderStatus,
-  uploadImagesUser
-);
 router.put("/edit-user", authMiddleware, updatedUser);
 router.put("/save-address", authMiddleware, saveAddress);
 router.put("/block-user/:id", authMiddleware, isAdmin, blockUser);

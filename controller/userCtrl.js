@@ -3,9 +3,9 @@ const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
-const validateId = require("../utils/validateId");
+const validateId = require("../utils/validateRegisterId");
 const { generateRefreshToken } = require("../config/refreshtoken");
-const sendEmail = require("./emailCtrl");
+const sendEmail = require("./emailMessageCtrl");
 const { Op } = require("sequelize");
 
 

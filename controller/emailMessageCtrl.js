@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 const asyncHandler = require("express-async-handler");
-const ContactMessage = require("../models/contactMessage");
+const ContactMessage = require("../models/emailMessageModel");
 
 // Validações
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
