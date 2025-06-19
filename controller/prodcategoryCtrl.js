@@ -1,9 +1,9 @@
 const asyncHandler = require("express-async-handler");
-const { Category } = require("../models"); // Sequelize Category model
+const ProductCategory = require('../models').ProductCategory;
 
 const createCategory = asyncHandler(async (req, res) => {
   try {
-    const newCategory = await Category.create(req.body);
+    const newCategory = await ProductCategory.create(req.body);
     res.status(201).json(newCategory);
   } catch (error) {
     throw new Error(error.message);
@@ -13,7 +13,7 @@ const createCategory = asyncHandler(async (req, res) => {
 const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
-    const category = await Category.findByPk(id);
+    const category = await ProductCategory.findByPk(id);
     if (!category) {
       return res.status(404).json({ message: "Categoria não encontrada" });
     }
@@ -27,7 +27,7 @@ const updateCategory = asyncHandler(async (req, res) => {
 const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
-    const category = await Category.findByPk(id);
+    const category = await ProductCategory.findByPk(id);
     if (!category) {
       return res.status(404).json({ message: "Categoria não encontrada" });
     }
@@ -41,7 +41,7 @@ const deleteCategory = asyncHandler(async (req, res) => {
 const getCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
-    const category = await Category.findByPk(id);
+    const category = await ProductCategory.findByPk(id);
     if (!category) {
       return res.status(404).json({ message: "Categoria não encontrada" });
     }
@@ -53,7 +53,7 @@ const getCategory = asyncHandler(async (req, res) => {
 
 const getallCategory = asyncHandler(async (req, res) => {
   try {
-    const categories = await Category.findAll();
+    const categories = await ProductCategory.findAll();
     res.json(categories);
   } catch (error) {
     throw new Error(error.message);
@@ -67,3 +67,4 @@ module.exports = {
   getCategory,
   getallCategory,
 };
+

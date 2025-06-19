@@ -1,12 +1,12 @@
 
 const uniqid = require("uniqid");
 const asyncHandler = require("express-async-handler");
-const User = require("../models/userModel");
-const Product = require("../models/productModel");
-const Cart = require("../models/cartModel");
-const Coupon = require("../models/couponModel");
-const Order = require("../models/orderModel");
 const validateId = require("../utils/validateRegisterId");
+const User = require('../models').User;
+const Product = require('../models').Product;
+const Cart = require('../models').Cart;
+const Coupon = require('../models').Coupon;
+const Order = require('../models').Order;
 
 
 const getWishlist = asyncHandler(async (req, res) => {

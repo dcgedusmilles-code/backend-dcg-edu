@@ -8,12 +8,13 @@ const {
   getCategory,
   getallCategory,
 } = require("../controller/prodcategoryCtrl");
+
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 
-router.post("/", authMiddleware, isAdmin, createCategory);
 router.put("/:id", authMiddleware, isAdmin, updateCategory);
 router.delete("/:id", authMiddleware, isAdmin, deleteCategory);
 router.get("/:id", getCategory);
 router.get("/", getallCategory);
+// router.post("/", authMiddleware, isAdmin, createCategory);
 
 module.exports = router;

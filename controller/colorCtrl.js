@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Color = require("../models/colorModel");
+const Color = require('../models').Color;
 
 // Criar nova cor
 const createColor = asyncHandler(async (req, res) => {

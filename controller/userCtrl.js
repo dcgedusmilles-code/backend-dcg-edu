@@ -1,12 +1,15 @@
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("express-async-handler");
-const User = require("../models/userModel");
 const { generateToken } = require("../config/jwtToken");
 const validateId = require("../utils/validateRegisterId");
 const { generateRefreshToken } = require("../config/refreshtoken");
-const sendEmail = require("./emailMessageCtrl");
 const { Op } = require("sequelize");
+const sendEmail = require("./emailMessageCtrl");
+// const User = require("../models/user");
+var User = require('../models').User;
+var UserWishlist = require('../models').UserWishlist;
+
 
 
 const createUser = asyncHandler(async (req, res) => {
@@ -41,29 +44,23 @@ const createUser = asyncHandler(async (req, res) => {
 
 
 const loginHandler = async ({ email, password, role }) => {
-  // Busca usuário pelo email
   const user = await User.findOne({ where: { email } });
 
   if (!user) {
     throw new Error("User not found");
   }
-
-  // Verifica role, se fornecida
   if (role && user.role !== role) {
     throw new Error("Not Authorized");
   }
 
-  // Valida a senha (método do model, similar ao Mongoose)
   const isPasswordValid = await user.isPasswordMatched(password);
 
   if (!isPasswordValid) {
     throw new Error("Invalid Credentials");
   }
 
-  // Gera o refreshToken
   const refreshToken = await generateRefreshToken(user.id);
 
-  // Atualiza o refreshToken no banco (usando update)
   await User.update(
     { refreshToken },
     { where: { id: user.id } }
@@ -87,19 +84,14 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Usa o loginHandler (que já usa Sequelize)
     const { userData, refreshToken } = await loginHandler({ email, password });
-
-  // Define cookie de refresh token
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000, // 72h
     });
 
-    // Retorna dados do usuário + refreshToken
     res.status(200).json({ ...userData, refreshToken });
   } catch (error) {
-    // Trate erros (exemplo: user não encontrado ou senha inválida)
     res.status(401).json({ message: error.message || "Login failed" });
   }
 });
@@ -108,16 +100,12 @@ const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    // Usando loginHandler para validar usuário e role admin
     const { userData, refreshToken } = await loginHandler({ email, password, role: "admin" });
-
-  // Define cookie de refreshToken (httpOnly, 72h)
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       maxAge: 72 * 60 * 60 * 1000,
     });
 
-    // Retorna dados do admin, sem refreshToken no corpo da resposta
     res.status(200).json(userData);
   } catch (error) {
     res.status(401).json({ message: error.message || "Login failed" });
@@ -132,21 +120,17 @@ const handleRefreshToken = asyncHandler(async (req, res) => {
     throw new Error("No Refresh Token in Cookies");
   }
 
-  // Buscar usuário com esse refreshToken no banco
   const user = await User.findOne({ where: { refreshToken } });
   if (!user) {
     res.status(403);
     throw new Error("Refresh token not found in database or not matched");
   }
 
-  // Verificar validade do refresh token
   jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
     if (err || user.id.toString() !== decoded.id) {
       res.status(403);
       throw new Error("Invalid refresh token");
     }
-
-    // Gerar um novo access token
     const accessToken = generateToken(user.id);
     res.json({ accessToken });
   });
@@ -160,11 +144,9 @@ const logout = asyncHandler(async (req, res) => {
     throw new Error("No Refresh Token in Cookies");
   }
 
-  // Buscar usuário pelo refreshToken
   const user = await User.findOne({ where: { refreshToken } });
 
   if (!user) {
-    // Se não encontrou o usuário, limpa o cookie mesmo assim
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: true,
@@ -173,10 +155,8 @@ const logout = asyncHandler(async (req, res) => {
     return res.sendStatus(204); // No Content
   }
 
-  // Atualizar o usuário removendo o refreshToken no banco
   await user.update({ refreshToken: null });
 
-  // Limpar cookie no cliente
   res.clearCookie("refreshToken", {
     httpOnly: true,
     secure: true,
@@ -201,7 +181,6 @@ const updatedUser = asyncHandler(async (req, res) => {
       throw new Error("User not found");
     }
 
-    // Atualiza os campos permitidos
     await user.update(updateData);
 
     res.json(user);
@@ -234,12 +213,13 @@ const saveAddress = asyncHandler(async (req, res) => {
   }
 });
 
+
 const getAllUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.findAll({
       include: [
         {
-          model: Wishlist, // modelo associado
+          model: UserWishlist, // modelo associado
           as: "wishlist", // o alias usado na associação, ajuste conforme seu setup
         },
       ],
@@ -259,7 +239,7 @@ const getAUser = asyncHandler(async (req, res) => {
     const user = await User.findByPk(id, {
       include: [
         {
-          model: Wishlist,
+          model: UserWishlist,
           as: "wishlist",
         },
       ],

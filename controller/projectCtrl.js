@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Project = require("../models/projectModel");
+const Project = require('../models').Project;
 
 // Criar um novo projeto
 const createProject = asyncHandler(async (req, res) => {

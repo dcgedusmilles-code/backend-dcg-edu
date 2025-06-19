@@ -1,5 +1,5 @@
 const asyncHandler = require("express-async-handler");
-const Enquiry = require("../models/enqModel"); // Sequelize model
+const Enquiry = require('../models').Enquiry;
 
 // CREATE
 const createEnquiry = asyncHandler(async (req, res) => {

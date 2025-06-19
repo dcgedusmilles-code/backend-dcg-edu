@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
-const Brand = require("../models/brandModel");
 const fs = require("fs");
 const { cloudinaryUploadImg } = require("../utils/cloudinary");
+const Brand = require('../models').Brand;
 
 const createBrand = asyncHandler(async (req, res) => {
   try {

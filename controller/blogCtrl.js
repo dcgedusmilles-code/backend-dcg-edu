@@ -1,6 +1,10 @@
 const asyncHandler = require("express-async-handler");
+const sequelize = require("../config/dbConnect");
 const fs = require("fs");
-const { Blog, Category, User, sequelize } = require("../models");
+const Blog = require('../models').Blog;
+const Category = require('../models').Category;
+const User = require('../models').User;
+
 const { cloudinaryUploadImg } = require("../utils/cloudinary");
 
 // CREATE

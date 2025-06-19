@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
-const Organization = require("../models/organizationModel");
+const Organization = require('../models').Organization;
+
 
 // CREATE
 const createOrganization = asyncHandler(async (req, res) => {

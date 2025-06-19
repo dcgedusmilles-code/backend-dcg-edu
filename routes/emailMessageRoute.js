@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const ContactMessage = require("../controller/emailMessageCtrl");
+const sendEmail = require("../controller/emailMessageCtrl");
 
 router.post("/sendEmail", sendEmail);
 router.get("/", sendEmail);

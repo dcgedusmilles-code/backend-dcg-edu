@@ -1,8 +1,8 @@
 const asyncHandler = require("express-async-handler");
-const Service = require("../models/ServiceModel");
-const Category = require("../models/CategoryModel");
+const Service = require("../models/service");
+const ServiceCategory = require('../models').ServiceCategory;
 
-// Criar novo serviço
+
 const createService = asyncHandler(async (req, res) => {
   const { title, description, image, categoryId } = req.body;
 
@@ -27,12 +27,12 @@ const createService = asyncHandler(async (req, res) => {
     });
 
     const populatedService = await Service.findByPk(newService.id, {
-      include: { model: Category, as: "category" },
+      include: { model: ServiceCategory, as: "category" },
     });
 
-    res.json(populatedService);
+    res.status(201).json(populatedService);
   } catch (error) {
-    res.status(400).json({ error: "Error creating service: " + error.message });
+    res.status(500).json({ error: "Error creating service: " + error.message });
   }
 });
 
@@ -40,12 +40,12 @@ const createService = asyncHandler(async (req, res) => {
 const getAllService = asyncHandler(async (req, res) => {
   try {
     const services = await Service.findAll({
-      include: { model: Category, as: "category" },
+      include: { model: ServiceCategory, as: "category" },
       order: [["createdAt", "DESC"]],
     });
     res.status(200).json(services);
   } catch (error) {
-    res.status(400).json({ error: "Error listing services: " + error.message });
+    res.status(500).json({ error: "Error listing services: " + error.message });
   }
 });
 
@@ -59,7 +59,7 @@ const getOneService = asyncHandler(async (req, res) => {
 
   try {
     const service = await Service.findByPk(id, {
-      include: { model: Category, as: "category" },
+      include: { model: ServiceCategory, as: "category" },
     });
 
     if (!service) {
@@ -68,7 +68,7 @@ const getOneService = asyncHandler(async (req, res) => {
 
     res.status(200).json(service);
   } catch (error) {
-    res.status(400).json({ error: "Error fetching service: " + error.message });
+    res.status(500).json({ error: "Error fetching service: " + error.message });
   }
 });
 
@@ -83,13 +83,14 @@ const updateService = asyncHandler(async (req, res) => {
 
   try {
     await service.update(req.body);
+
     const updatedService = await Service.findByPk(id, {
-      include: { model: Category, as: "category" },
+      include: { model: ServiceCategory, as: "category" },
     });
 
     res.status(200).json(updatedService);
   } catch (error) {
-    res.status(400).json({ error: "Error updating service: " + error.message });
+    res.status(500).json({ error: "Error updating service: " + error.message });
   }
 });
 
@@ -110,7 +111,7 @@ const deleteService = asyncHandler(async (req, res) => {
       service,
     });
   } catch (error) {
-    res.status(400).json({ error: "Error deleting service: " + error.message });
+    res.status(500).json({ error: "Error deleting service: " + error.message });
   }
 });
 
