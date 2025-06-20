@@ -1,9 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const sequelize = require("../config/dbConnect");
 const fs = require("fs");
-const Blog = require('../models').Blog;
-const Category = require('../models').Category;
-const User = require('../models').User;
+const { Blog, BCategory, User } = require('../models');
 
 const { cloudinaryUploadImg } = require("../utils/cloudinary");
 
@@ -24,7 +22,7 @@ const createBlog = asyncHandler(async (req, res) => {
   });
 
   const populatedBlog = await Blog.findByPk(newBlog.id, {
-    include: [{ model: Category }, { model: User, as: "likes" }, { model: User, as: "dislikes" }],
+    include: [{ model: BCategory, as: 'category' }],
   });
 
   res.status(201).json(populatedBlog);
@@ -42,9 +40,7 @@ const updateBlog = asyncHandler(async (req, res) => {
 // GET ONE (incrementa views)
 const getBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const blog = await Blog.findByPk(id, {
-    include: [{ model: Category }, { model: User, as: "likes" }, { model: User, as: "dislikes" }],
-  });
+  const blog = await Blog.findByPk(id);
   if (!blog) return res.status(404).json({ message: "Blog não encontrado." });
 
   await blog.increment("numViews");
@@ -54,7 +50,7 @@ const getBlog = asyncHandler(async (req, res) => {
 // GET ALL
 const getAllBlogs = asyncHandler(async (req, res) => {
   const blogs = await Blog.findAll({
-    include: [{ model: Category }, { model: User, as: "likes" }, { model: User, as: "dislikes" }],
+    include: [{ model: BCategory, as: 'category' }],
     order: [["createdAt", "DESC"]],
   });
   res.json(blogs);
@@ -87,9 +83,7 @@ const likeTheBlog = asyncHandler(async (req, res) => {
     }
     await tx.commit();
 
-    const updated = await Blog.findByPk(blogId, {
-      include: [{ model: User, as: "likes" }, { model: User, as: "dislikes" }],
-    });
+    const updated = await Blog.findByPk(blogId);
     res.json(updated);
   } catch (err) {
     await tx.rollback();
@@ -117,7 +111,7 @@ const dislikeTheBlog = asyncHandler(async (req, res) => {
     await tx.commit();
 
     const updated = await Blog.findByPk(blogId, {
-      include: [{ model: User, as: "likes" }, { model: User, as: "dislikes" }],
+      //include: [{ model: User, as: "likes" }, { model: User, as: "dislikes" }],
     });
     res.json(updated);
   } catch (err) {

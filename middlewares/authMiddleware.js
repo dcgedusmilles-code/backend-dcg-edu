@@ -1,8 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
-const User = require("../models/user");
+const { User } = require("../models"); // Importação correta para Sequelize
 
-// Middleware para autenticação via JWT
 const authMiddleware = asyncHandler(async (req, res, next) => {
   let token;
 
@@ -15,27 +14,27 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      const user = await User.findById(decoded.id).select("-password");
+      // Método correto para Sequelize: findByPk
+      const user = await User.findByPk(decoded.id, {
+        attributes: { exclude: ['password'] } // Equivalente ao .select('-password')
+      });
 
       if (!user) {
-        res.status(401);
-        throw new Error("Usuário não encontrado");
+        return res.status(401).json({ message: "Usuário não encontrado" });
       }
 
-      req.user = user;
+      req.user = user.get({ plain: true }); // Converte para objeto simples
       next();
     } catch (error) {
       console.error("Erro de autenticação:", error.message);
-      res.status(401);
-      throw new Error("Token inválido ou expirado");
+      return res.status(401).json({ message: "Token inválido ou expirado" });
     }
   } else {
-    res.status(401);
-    throw new Error("Token não fornecido ou mal formatado");
+    return res.status(401).json({ message: "Token não fornecido ou mal formatado" });
   }
 });
 
-// Middleware para autorização de admin, usando o usuário já carregado no req.user
+// Middleware para autorização de admin (atualizado para Sequelize)
 const isAdmin = (req, res, next) => {
   if (!req.user || req.user.role !== "admin") {
     return res.status(403).json({ message: "Acesso negado: administrador apenas" });

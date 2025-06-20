@@ -40,5 +40,5 @@ router.put("/likes", authMiddleware, likeTheBlog);
 router.put("/dislikes", authMiddleware, dislikeTheBlog);
 router.put("/:id", authMiddleware, checkPermission("update"), updateBlog);
 router.get("/:id", authMiddleware, checkPermission("read"), getBlog);
-router.get("/", authMiddleware, checkPermission("read"), getAllBlogs);
+router.get("/", authMiddleware /*, checkPermission("read"),*/, getAllBlogs);
 router.delete("/:id", authMiddleware, isAdmin, deleteBlog);
