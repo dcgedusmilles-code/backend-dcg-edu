@@ -15,8 +15,10 @@ var UserWishlist = require('../models').UserWishlist;
 const createUser = asyncHandler(async (req, res) => {
   const { email, mobile, password, firstname, lastname } = req.body;
 
-  if (!email || !password || !firstname || !lastname || !mobile) {
-    return res.status(400).json({ message: "Todos os campos são obrigatórios." });
+  console.log(req.body);
+
+  if (!email || !password || !firstname || !lastname) {
+    return res.status(400).json({ message: "Firstname, lastname, email e senha são obrigatórios." });
   }
 
   const existingUser = await User.findOne({ where: { email } });
@@ -24,9 +26,11 @@ const createUser = asyncHandler(async (req, res) => {
     return res.status(409).json({ message: "Usuário já existe com este e-mail." });
   }
 
-  const existingPhone = await User.findOne({ where: { mobile } });
-  if (existingPhone) {
-    return res.status(409).json({ message: "Usuário já existe com este número." });
+  if (mobile) {
+    const existingPhone = await User.findOne({ where: { mobile } });
+    if (existingPhone) {
+      return res.status(409).json({ message: "Usuário já existe com este número." });
+    }
   }
 
   const user = await User.create({ email, password, firstname, lastname, mobile });
@@ -167,7 +171,7 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const updatedUser = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
 
   validateId(userId); // valide conforme sua regra
 
@@ -191,7 +195,7 @@ const updatedUser = asyncHandler(async (req, res) => {
 });
 
 const saveAddress = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
 
   validateId(userId);
 
@@ -336,7 +340,7 @@ const unblockUser = asyncHandler(async (req, res) => {
 });
 
 const updatePassword = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
   const { password } = req.body;
 
   validateId(userId);

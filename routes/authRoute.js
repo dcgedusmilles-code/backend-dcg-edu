@@ -28,8 +28,8 @@ const { resizeAndSaveImage, uploadPhoto } = require("../middlewares/uploadImage"
 
 
 router.post("/register",
-  //uploadPhoto.array("images", 10), // Se estiver usando o Multer
-  //uploadsImages, // 🔄 Agora chamamos primeiro o upload de imagens
+  uploadPhoto.array("images", 10), // Se estiver usando o Multer
+  uploadsImages, // 🔄 Agora chamamos primeiro o upload de imagens
   createUser);
 router.post("/forgot-password-token", forgotPasswordToken);
 router.put("/reset-password/:token", resetPassword);

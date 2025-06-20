@@ -1,4 +1,3 @@
-
 const uniqid = require("uniqid");
 const asyncHandler = require("express-async-handler");
 const validateId = require("../utils/validateRegisterId");
@@ -10,7 +9,7 @@ const Order = require('../models').Order;
 
 
 const getWishlist = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
 
   const user = await User.findByPk(userId, {
     include: [{
@@ -27,7 +26,7 @@ const getWishlist = asyncHandler(async (req, res) => {
 });
 
 const emptyCart = asyncHandler(async (req, res) => {
-  const userId = req.user._id;
+  const userId = req.user.id;
   validateId(userId);
 
   try {
@@ -55,7 +54,7 @@ const emptyCart = asyncHandler(async (req, res) => {
 
 const applyCoupon = asyncHandler(async (req, res) => {
   const { coupon } = req.body;
-  const userId = req.user._id;
+  const userId = req.user.id;
   validateId(userId);
 
   // Busca o cupom válido
@@ -100,7 +99,7 @@ const applyCoupon = asyncHandler(async (req, res) => {
 
 const createOrder = asyncHandler(async (req, res) => {
   const { COD, couponApplied } = req.body;
-  const userId = req.user._id;
+  const userId = req.user.id;
   validateId(userId);
 
   try {
