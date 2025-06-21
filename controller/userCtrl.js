@@ -14,10 +14,7 @@ var UserWishlist = require('../models').UserWishlist;
 
 const createUser = asyncHandler(async (req, res) => {
   const { email, mobile, password, firstname, lastname } = req.body;
-
-  console.log(req.body);
-
-  if (!email || !password || !firstname || !lastname) {
+   if (!email || !password || !firstname || !lastname) {
     return res.status(400).json({ message: "Firstname, lastname, email e senha são obrigatórios." });
   }
 
@@ -171,15 +168,18 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const updatedUser = asyncHandler(async (req, res) => {
-  const userId = req.user.id;
+  const userId= req.params.id;
 
-  validateId(userId); // valide conforme sua regra
+
+
+
+ // validateId(userId); // valide conforme sua regra
 
   const { firstname, lastname, email, mobile } = req.body;
   const updateData = { firstname, lastname, email, mobile };
 
   try {
-    const user = await User.findByPk(userId);
+    const user = await User.findOne({ where: {id : userId } });
     if (!user) {
       res.status(404);
       throw new Error("User not found");
@@ -189,7 +189,12 @@ const updatedUser = asyncHandler(async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    res.status(500);
+
+
+    res.status(500).json({ message: error.message || "Error updating user", 
+      userId: userId || "Unknown",
+      updateData: updateData
+    });
     throw new Error(error.message);
   }
 });

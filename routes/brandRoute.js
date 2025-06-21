@@ -12,18 +12,16 @@ const {
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
 const checkPermission = require("../middlewares/checkPermission");
 const { uploadsImages } = require("../controller/uploadCtrl");
-
-const { resizeAndSaveImage, uploadPhoto } = require("./../middlewares/uploadImage");
+const { uploadPhoto } = require("./../middlewares/uploadImage");
 
 
 router.post(
   "/",
   authMiddleware,
   isAdmin,
-  uploadPhoto.array("image", 2),
-  resizeAndSaveImage,
-  createBrand,
-  uploadsImages
+  uploadPhoto.array("images", 10),
+  uploadsImages,
+  createBrand
 );
 
 router.put(
@@ -31,19 +29,16 @@ router.put(
   authMiddleware,
   isAdmin,
   checkPermission("update"),
-  uploadPhoto.array("image", 2),
-  updateBrand,
-  resizeAndSaveImage,
-  uploadsImages
+  uploadPhoto.array("images", 10),
+  uploadsImages,
+  uploadImages
 );
 
 router.put(
   "/:id",
   authMiddleware,
   isAdmin,
-  updateBrand,
-  resizeAndSaveImage,
-  uploadsImages
+  updateBrand
 );
 router.delete("/:id", authMiddleware, isAdmin, deleteBrand);
 router.get("/:id", getBrand);

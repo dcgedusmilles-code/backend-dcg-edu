@@ -4,7 +4,11 @@ const Project = require('../models').Project;
 // Criar um novo projeto
 const createProject = asyncHandler(async (req, res) => {
   try {
-    const newProject = await Project.create(req.body);
+    const imageUrls = req.uploadedImages || [];
+    const newProject = await Project.create({
+      ...req.body,
+      images: imageUrls,
+    });
     res.status(201).json(newProject);
   } catch (error) {
     res.status(400).json({ error: error.message });

@@ -1,12 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const fs = require("fs");
 const { cloudinaryUploadImg } = require("../utils/cloudinary");
-const Brand = require('../models').Brand;
+const { Brand } = require('../models');
 
 const createBrand = asyncHandler(async (req, res) => {
   try {
-    const { title, images } = req.body;
-    const newBrand = await Brand.create({ title, images });
+    const { title } = req.body;
+    const imageUrls = req.uploadedImages || [];
+    const newBrand = await Brand.create({ title, images: imageUrls });
     res.status(201).json(newBrand);
   } catch (error) {
     throw new Error(error.message);
@@ -59,19 +60,16 @@ const getallBrand = asyncHandler(async (req, res) => {
 const uploadImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
-    const uploader = (path) => cloudinaryUploadImg(path, "images");
-    const urls = [];
-
-    for (const file of req.files) {
-      const newpath = await uploader(file.path);
-      urls.push(newpath);
-      fs.unlinkSync(file.path);
+    const brand = await Brand.findByPk(id);
+    if (!brand) {
+      return res.status(404).json({ message: "Marca não encontrada."});
     }
 
-    await Brand.update(
-      { images: urls },
-      { where: { id } }
-    );
+    const urls = req.uploadedImages || [];
+    const existingImages = brand.images || [];
+    const updatedImages = existingImages.concat(urls);
+
+    await brand.update({ images: updatedImages });
 
     const updatedBrand = await Brand.findByPk(id);
     res.status(200).json(updatedBrand);

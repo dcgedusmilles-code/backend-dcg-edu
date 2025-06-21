@@ -11,9 +11,8 @@ const {
 
 
 const { authMiddleware } = require("./../middlewares/authMiddleware");
-const {
-  uploadPhoto, resizeAndSaveImage
-} = require("./../middlewares/uploadImage");
+const { uploadPhoto } = require("./../middlewares/uploadImage");
+const { uploadsImages } = require("./../controller/uploadCtrl");
 const checkPermission = require("./../middlewares/checkPermission");
 //Service routes
 
@@ -32,8 +31,8 @@ router.post(
   "/",
   authMiddleware,
   checkPermission("create"),
-  uploadPhoto.array("image", 10),
-  resizeAndSaveImage,
+  uploadPhoto.array("images", 10),
+  uploadsImages,
   createService
 );
 

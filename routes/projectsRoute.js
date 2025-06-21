@@ -11,14 +11,15 @@ const {
 
 const checkPermission = require("../middlewares/checkPermission");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
-const { resizeAndSaveImage, uploadPhoto } = require("../middlewares/uploadImage");
+const { uploadPhoto } = require("../middlewares/uploadImage");
+const { uploadsImages } = require("../controller/uploadCtrl");
 
 router.post(
   "/",
   authMiddleware,
   checkPermission("create"),
   uploadPhoto.array("images", 10),
-  resizeAndSaveImage,
+  uploadsImages,
   createProject
 );
 

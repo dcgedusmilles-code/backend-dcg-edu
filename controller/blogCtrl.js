@@ -19,6 +19,7 @@ const createBlog = asyncHandler(async (req, res) => {
     categoryId: req.body.category,
     author: req.body.author,
     images: imageUrls,
+    
   });
 
   const populatedBlog = await Blog.findByPk(newBlog.id, {
@@ -126,14 +127,14 @@ const uploadImagesBlog = asyncHandler(async (req, res) => {
   const blog = await Blog.findByPk(id);
   if (!blog) return res.status(404).json({ message: "Blog não encontrado." });
 
-  const urls = [];
-  for (const file of req.body.images) {
-    const uploaded = await cloudinaryUploadImg(file.path, "images");
-    urls.push(uploaded);
-    fs.unlinkSync(file.path);
-  }
+  // As URLs já foram processadas pelo middleware uploadsImages
+  const urls = req.uploadedImages || [];
+  
+  // Concatena as novas imagens com as existentes, se houver
+  const existingImages = blog.images || [];
+  const updatedImages = existingImages.concat(urls);
 
-  await blog.update({ images: urls });
+  await blog.update({ images: updatedImages });
   res.json(await Blog.findByPk(id));
 });
 

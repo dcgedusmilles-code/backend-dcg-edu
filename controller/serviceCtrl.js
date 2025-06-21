@@ -1,10 +1,11 @@
 const asyncHandler = require("express-async-handler");
-const Service = require("../models/service");
-const ServiceCategory = require('../models').ServiceCategory;
+const { Service, ServiceCategory } = require("../models");
 
 
 const createService = asyncHandler(async (req, res) => {
-  const { title, description, image, categoryId } = req.body;
+  const { title, description, categoryId } = req.body;
+  const imageUrls = req.uploadedImages || [];
+
 
   if (!title || !description || !categoryId) {
     return res.status(402).json({
@@ -22,7 +23,7 @@ const createService = asyncHandler(async (req, res) => {
     const newService = await Service.create({
       title,
       description,
-      image,
+      images: imageUrls,
       categoryId,
     });
 

@@ -15,24 +15,23 @@ const {
 
 const checkPermission = require("../middlewares/checkPermission");
 const { authMiddleware, isAdmin } = require("../middlewares/authMiddleware");
-const { resizeAndSaveImage, uploadPhoto } = require("../middlewares/uploadImage");
+const { uploadPhoto } = require("../middlewares/uploadImage");
 const { uploadsImages } = require("../controller/uploadCtrl");
 
 router.post(
   "/",
   authMiddleware,
   checkPermission("create"),
-  uploadPhoto.array("images", 10), // Se estiver usando o Multer
-  uploadsImages, // 🔄 Agora chamamos primeiro o upload de imagens
-  createBlog // 🔄 Depois chamamos a função para criar o blog com as imagens recebidas
+  uploadPhoto.array("images", 10), 
+  createBlog 
 );
 
 router.put(
   "/upload/:id",
   authMiddleware,
   isAdmin,
-  uploadPhoto.array("images", 2),
-  resizeAndSaveImage,
+  uploadPhoto.array("images", 10),
+  uploadsImages,
   uploadImagesBlog
 );
 

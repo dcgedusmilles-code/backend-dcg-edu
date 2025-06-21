@@ -8,20 +8,19 @@ cloudinary.v2.config({
 });
 
 const cloudinaryUploadImg = async (fileToUploads) => {
-  return new Promise((resolve) => {
-    cloudinary.uploader.upload(fileToUploads, (result) => {
-      resolve(
-        {
-          url: result.secure_url,
-          asset_id: result.asset_id,
-          public_id: result.public_id,
-        },
-        {
-          resource_type: "auto",
-        }
-      );
+  try {
+    const data = await cloudinary.v2.uploader.upload(fileToUploads, {
+      resource_type: "auto",
     });
-  });
+    return {
+      url: data.secure_url,
+      asset_id: data.asset_id,
+      public_id: data.public_id,
+    };
+  } catch (error) {
+    console.error("Cloudinary Upload Error:", error);
+    throw new Error("Failed to upload image to Cloudinary.");
+  }
 };
 
 const cloudinaryDeleteImg = async (fileToDelete) => {
