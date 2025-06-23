@@ -19,9 +19,9 @@ const createBlog = asyncHandler(async (req, res) => {
     categoryId: req.body.category,
     author: req.body.author,
     images: imageUrls,
-    
   });
 
+  // Buscar o blog recém-criado já populando a categoria
   const populatedBlog = await Blog.findByPk(newBlog.id, {
     include: [{ model: BCategory, as: 'category' }],
   });
@@ -127,10 +127,8 @@ const uploadImagesBlog = asyncHandler(async (req, res) => {
   const blog = await Blog.findByPk(id);
   if (!blog) return res.status(404).json({ message: "Blog não encontrado." });
 
-  // As URLs já foram processadas pelo middleware uploadsImages
   const urls = req.uploadedImages || [];
   
-  // Concatena as novas imagens com as existentes, se houver
   const existingImages = blog.images || [];
   const updatedImages = existingImages.concat(urls);
 

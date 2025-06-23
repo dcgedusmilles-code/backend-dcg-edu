@@ -23,6 +23,7 @@ router.put(
   authMiddleware,
   checkPermission("update"),
   uploadPhoto.array("image", 2),
+  uploadsImages,
   updateService
 );
 router.delete("/:id", authMiddleware, checkPermission("delete"), deleteService);

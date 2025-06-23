@@ -23,6 +23,7 @@ router.post(
   authMiddleware,
   checkPermission("create"),
   uploadPhoto.array("images", 10), 
+  uploadsImages, 
   createBlog 
 );
 

@@ -5,7 +5,7 @@ const fs = require("fs");
 // Configuração do Storage do Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    const dest = "public/images/uploads";
+    const dest = path.join(__dirname, "../public/images/temp");
     if (!fs.existsSync(dest)) {
       fs.mkdirSync(dest, { recursive: true });
     }
