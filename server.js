@@ -17,6 +17,9 @@ const blogcategoryRouter = require("./routes/blogCatRoute");
 const serviceRoutes = require("./routes/serviceRoute");
 const serviceCategoryRoutes = require("./routes/serviceCategoryRoute");
 
+const portfolioRouter = require("./routes/portfolioRoute");
+const portfolioCategoryRouter = require("./routes/portfolioCategoryRoute");
+
 const categoryRouter = require("./routes/productcategoryRoute");
 const brandRouter = require("./routes/brandRoute");
 const colorRouter = require("./routes/colorRoute");
@@ -72,6 +75,8 @@ app.use("/api/projects", projectsRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api/category", categoryRouter);
 app.use("/api/blogcategory", blogcategoryRouter);
+app.use("/api/portfolio", portfolioRouter);
+app.use("/api/portfolio/category", portfolioCategoryRouter);
 app.use("/api/coupon", couponRouter);
 app.use("/api/color", colorRouter);
 app.use("/api/enquiry", enqRouter);
@@ -103,7 +108,7 @@ sequelize.authenticate()
   })
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Server is running at PORT ${PORT}`);
+      console.log(`Server is running at PORT ${PORT}`);
     });
   })
   .catch((err) => {

@@ -26,7 +26,6 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
       req.user = user.get({ plain: true }); // Converte para objeto simples
       next();
     } catch (error) {
-      console.error("Erro de autenticação:", error.message);
       return res.status(401).json({ message: "Token inválido ou expirado" });
     }
   } else {
