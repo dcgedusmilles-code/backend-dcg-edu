@@ -26,24 +26,24 @@ const sendEmail = asyncHandler(async (req, res) => {
     // 🔽 SALVA NO BANCO (MySQL)
     await ContactMessage.create({ name, email, message });
 
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.MAIL_ID,
-        pass: process.env.MP,
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   host: "smtp.gmail.com",
+    //   port: 587,
+    //   secure: false,
+    //   auth: {
+    //     user: process.env.MAIL_ID,
+    //     pass: process.env.MP,
+    //   },
+    // });
 
-    await transporter.sendMail({
-      from: `"${name}" <${email}>`,
-      to: process.env.MAIL_ID,
-      subject: "Mensagem de " + name,
-      text: message,
-      html: message,
-      replyTo: email,
-    });
+    // await transporter.sendMail({
+    //   from: `"${name}" <${email}>`,
+    //   to: process.env.MAIL_ID,
+    //   subject: "Mensagem de " + name,
+    //   text: message,
+    //   html: message,
+    //   replyTo: email,
+    // });
 
     return res.status(200).json({ message: "Email enviado com sucesso!" });
   } catch (error) {
@@ -52,4 +52,48 @@ const sendEmail = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = sendEmail;
+
+// GET ALL
+const getallSendEmail = asyncHandler(async (req, res) => {
+  try {
+    const emailSend = await ContactMessage.findAll();
+    res.status(200).json(emailSend);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+});
+
+// GET ONE
+const getASendEmail = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const emailSend = await ContactMessage.findByPk(id);
+    if (!emailSend) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    res.status(200).json(emailSend);
+  } catch (error) {
+    throw new Error(error.message);
+  }
+});
+
+// DELETE
+const deleteSendEmail = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const SendEmail = await ContactMessage.findByPk(id);
+    if (!SendEmail) {
+      return res.status(404).json({ message: "Email not found" });
+    }
+
+    await SendEmail.destroy();
+    res.status(200).json({ message: "Email deleted successfully" });
+  } catch (error) {
+    throw new Error(error.message);
+  }
+});
+
+module.exports = { sendEmail, getallSendEmail, deleteSendEmail, getASendEmail };
