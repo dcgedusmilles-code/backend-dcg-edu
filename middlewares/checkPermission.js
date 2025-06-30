@@ -6,6 +6,7 @@ const roles = require("../utils/roles");
  */
 const checkPermission = (action) => {
   return (req, res, next) => {
+    
     const userRole = req.user?.role;
 
     // Verifica se a role existe e se tem permissão para a ação
