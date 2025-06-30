@@ -15,7 +15,7 @@ var UserWishlist = require('../models').UserWishlist;
 const createUser = asyncHandler(async (req, res) => {
   const { email, mobile, password, firstname, lastname,role } = req.body;
 
-  console.log(req.body)
+  //console.log(req.body)
    if (!email || !password || !firstname || !lastname) {
     return res.status(400).json({ message: "Firstname, lastname, email e senha são obrigatórios." });
   }
