@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Project = require('../models').Project;
 
-// Criar um novo projeto
 const createProject = asyncHandler(async (req, res) => {
   try {
     const imageUrls = req.uploadedImages || [];
@@ -15,7 +14,6 @@ const createProject = asyncHandler(async (req, res) => {
   }
 });
 
-// Atualizar projeto por ID
 const updateProject = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -23,7 +21,6 @@ const updateProject = asyncHandler(async (req, res) => {
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-
     await project.update(req.body);
     res.json(project);
   } catch (error) {
@@ -31,7 +28,6 @@ const updateProject = asyncHandler(async (req, res) => {
   }
 });
 
-// Buscar projeto por ID
 const getProject = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -45,7 +41,6 @@ const getProject = asyncHandler(async (req, res) => {
   }
 });
 
-// Buscar todos os projetos
 const getAllProjects = asyncHandler(async (req, res) => {
   try {
     const allProjects = await Project.findAll({
@@ -57,7 +52,6 @@ const getAllProjects = asyncHandler(async (req, res) => {
   }
 });
 
-// Deletar projeto por ID
 const deleteProject = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -65,7 +59,6 @@ const deleteProject = asyncHandler(async (req, res) => {
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
-
     await project.destroy();
     res.status(200).json({ message: "Project deleted successfully", project });
   } catch (error) {

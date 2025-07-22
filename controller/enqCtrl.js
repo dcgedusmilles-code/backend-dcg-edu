@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Enquiry = require('../models').Enquiry;
 
-// CREATE
 const createEnquiry = asyncHandler(async (req, res) => {
   try {
     const newEnquiry = await Enquiry.create(req.body);
@@ -11,16 +10,13 @@ const createEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
-// UPDATE
 const updateEnquiry = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   try {
     const enquiry = await Enquiry.findByPk(id);
     if (!enquiry) {
       return res.status(404).json({ message: "Enquiry not found" });
     }
-
     await enquiry.update(req.body);
     res.status(200).json(enquiry);
   } catch (error) {
@@ -28,16 +24,13 @@ const updateEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
-// DELETE
 const deleteEnquiry = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   try {
     const enquiry = await Enquiry.findByPk(id);
     if (!enquiry) {
       return res.status(404).json({ message: "Enquiry not found" });
     }
-
     await enquiry.destroy();
     res.status(200).json({ message: "Enquiry deleted successfully" });
   } catch (error) {
@@ -45,23 +38,19 @@ const deleteEnquiry = asyncHandler(async (req, res) => {
   }
 });
 
-// GET ONE
 const getEnquiry = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   try {
     const enquiry = await Enquiry.findByPk(id);
     if (!enquiry) {
       return res.status(404).json({ message: "Enquiry not found" });
     }
-
     res.status(200).json(enquiry);
   } catch (error) {
     throw new Error(error.message);
   }
 });
 
-// GET ALL
 const getallEnquiry = asyncHandler(async (req, res) => {
   try {
     const enquiries = await Enquiry.findAll();

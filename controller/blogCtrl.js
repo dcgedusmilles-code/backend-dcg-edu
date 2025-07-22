@@ -3,16 +3,11 @@ const sequelize = require("../config/dbConnect");
 const fs = require("fs");
 const { Blog, BCategory, User } = require('../models');
 
-const { cloudinaryUploadImg } = require("../utils/cloudinary");
-
-// CREATE
 const createBlog = asyncHandler(async (req, res) => {
   if (!req.body.title || !req.body.description) {
     return res.status(400).json({ message: "Título e descrição são obrigatórios." });
   }
-
   const imageUrls = req.uploadedImages || [];
-
   const newBlog = await Blog.create({
     title: req.body.title,
     description: req.body.description,
@@ -21,15 +16,12 @@ const createBlog = asyncHandler(async (req, res) => {
     images: imageUrls,
   });
 
-  // Buscar o blog recém-criado já populando a categoria
   const populatedBlog = await Blog.findByPk(newBlog.id, {
     include: [{ model: BCategory, as: 'category' }],
   });
-
   res.status(201).json(populatedBlog);
 });
 
-// UPDATE
 const updateBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const blog = await Blog.findByPk(id);
@@ -38,17 +30,14 @@ const updateBlog = asyncHandler(async (req, res) => {
   res.json(blog);
 });
 
-// GET ONE (incrementa views)
 const getBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const blog = await Blog.findByPk(id);
   if (!blog) return res.status(404).json({ message: "Blog não encontrado." });
-
   await blog.increment("numViews");
   res.json(blog);
 });
 
-// GET ALL
 const getAllBlogs = asyncHandler(async (req, res) => {
   const blogs = await Blog.findAll({
     include: [{ model: BCategory, as: 'category' }],
@@ -57,7 +46,6 @@ const getAllBlogs = asyncHandler(async (req, res) => {
   res.json(blogs);
 });
 
-// DELETE
 const deleteBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const deleted = await Blog.destroy({ where: { id } });
@@ -65,14 +53,11 @@ const deleteBlog = asyncHandler(async (req, res) => {
   res.json({ message: "Blog deletado com sucesso." });
 });
 
-// LIKE
 const likeTheBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
   const userId = req.user.id;
-
   const blog = await Blog.findByPk(blogId);
   if (!blog) return res.status(404).json({ message: "Blog não encontrado." });
-
   const tx = await sequelize.transaction();
   try {
     await blog.removeDislike(req.user, { transaction: tx });
@@ -92,14 +77,11 @@ const likeTheBlog = asyncHandler(async (req, res) => {
   }
 });
 
-// DISLIKE
 const dislikeTheBlog = asyncHandler(async (req, res) => {
   const { blogId } = req.body;
   const userId = req.user.id;
-
   const blog = await Blog.findByPk(blogId);
   if (!blog) return res.status(404).json({ message: "Blog não encontrado." });
-
   const tx = await sequelize.transaction();
   try {
     await blog.removeLike(req.user, { transaction: tx });
@@ -121,17 +103,14 @@ const dislikeTheBlog = asyncHandler(async (req, res) => {
   }
 });
 
-// UPLOAD IMAGES
 const uploadImagesBlog = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const blog = await Blog.findByPk(id);
   if (!blog) return res.status(404).json({ message: "Blog não encontrado." });
 
   const urls = req.uploadedImages || [];
-  
   const existingImages = blog.images || [];
   const updatedImages = existingImages.concat(urls);
-
   await blog.update({ images: updatedImages });
   res.json(await Blog.findByPk(id));
 });

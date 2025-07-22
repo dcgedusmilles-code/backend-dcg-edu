@@ -10,7 +10,6 @@ const {
 const uploadsImages = asyncHandler(async (req, res, next) => {
   try {
     if (!req.files || req.files.length === 0) {
-      // Se não houver arquivos, simplesmente continue para o próximo middleware
       req.uploadedImages = [];
       return next();
     }
@@ -19,10 +18,10 @@ const uploadsImages = asyncHandler(async (req, res, next) => {
       const { path } = file;
       const uploadedImage = await cloudinaryUploadImg(path, "images");
       imageUrls.push(uploadedImage);
-      // Remove o arquivo temporário
       fs.unlinkSync(path);
     }
     req.uploadedImages = imageUrls;
+    console.log("Imagens carregadas com sucesso:", req.uploadedImages);
     next();
   } catch (error) {
     console.error("❌ Erro no upload:", error);

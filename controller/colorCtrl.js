@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Color = require('../models').Color;
 
-// Criar nova cor
 const createColor = asyncHandler(async (req, res) => {
   try {
     const newColor = await Color.create(req.body);
@@ -11,7 +10,6 @@ const createColor = asyncHandler(async (req, res) => {
   }
 });
 
-// Atualizar cor
 const updateColor = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -26,7 +24,6 @@ const updateColor = asyncHandler(async (req, res) => {
   }
 });
 
-// Deletar cor
 const deleteColor = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -40,7 +37,6 @@ const deleteColor = asyncHandler(async (req, res) => {
   }
 });
 
-// Obter uma cor por ID
 const getColor = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -54,7 +50,6 @@ const getColor = asyncHandler(async (req, res) => {
   }
 });
 
-// Obter todas as cores
 const getallColor = asyncHandler(async (req, res) => {
   try {
     const colors = await Color.findAll();

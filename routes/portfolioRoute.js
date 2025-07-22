@@ -42,7 +42,7 @@ router.put(
   updatePortfolio
 );
 router.get("/:id", authMiddleware, checkPermission("read"), getPortfolio);
-router.get("/", authMiddleware /*, checkPermission("read"),*/, getAllPortfolios);
+router.get("/", authMiddleware, getAllPortfolios);
 router.delete("/:id", authMiddleware, isAdmin, deletePortfolio);
 
 module.exports = router; 

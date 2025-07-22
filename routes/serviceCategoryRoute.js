@@ -22,8 +22,6 @@ router.post(
     createServiceCategory
 );
 
-//Category service route
-
 router.get(
     "/category",
     authMiddleware,

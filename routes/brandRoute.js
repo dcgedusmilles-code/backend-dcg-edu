@@ -14,7 +14,6 @@ const checkPermission = require("../middlewares/checkPermission");
 const { uploadsImages } = require("../controller/uploadCtrl");
 const { uploadPhoto } = require("./../middlewares/uploadImage");
 
-
 router.post(
   "/",
   authMiddleware,

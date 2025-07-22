@@ -1,21 +1,16 @@
 const asyncHandler = require("express-async-handler");
 const ServiceCategory = require('../models').ServiceCategory;
 
-// Criar nova categoria
 const createServiceCategory = asyncHandler(async (req, res) => {
   const { title } = req.body;
-
   if (!title) {
     return res.status(400).json({ message: "Title is required" });
   }
-
   try {
     const alreadyExists = await ServiceCategory.findOne({ where: { title } });
-
     if (alreadyExists) {
       return res.status(400).json({ message: "Category already exists" });
     }
-
     const newCategory = await ServiceCategory.create({ title });
     return res.status(201).json(newCategory);
   } catch (error) {
@@ -25,7 +20,6 @@ const createServiceCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Listar todas as categorias
 const getAllCategory = asyncHandler(async (req, res) => {
   try {
     const allCategory = await ServiceCategory.findAll({ order: [["createdAt", "DESC"]] });
@@ -35,17 +29,13 @@ const getAllCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Buscar uma categoria por ID
 const getOneServiceCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   try {
     const category = await ServiceCategory.findByPk(id);
-
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
-
     return res.status(200).json(category);
   } catch (error) {
     return res
@@ -54,16 +44,13 @@ const getOneServiceCategory = asyncHandler(async (req, res) => {
   }
 });
 
-// Atualizar uma categoria
 const updateCategoryService = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   try {
     const category = await ServiceCategory.findByPk(id);
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
-
     await category.update(req.body);
     return res.status(200).json(category);
   } catch (error) {
@@ -73,16 +60,13 @@ const updateCategoryService = asyncHandler(async (req, res) => {
   }
 });
 
-// Deletar uma categoria
 const deleteCategoryService = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   try {
     const category = await ServiceCategory.findByPk(id);
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
     }
-
     await category.destroy();
     return res.status(200).json({
       message: "Category removed successfully",

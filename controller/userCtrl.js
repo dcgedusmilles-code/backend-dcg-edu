@@ -6,16 +6,12 @@ const validateId = require("../utils/validateRegisterId");
 const { generateRefreshToken } = require("../config/refreshtoken");
 const { Op } = require("sequelize");
 const sendEmail = require("./emailMessageCtrl");
-// const User = require("../models/user");
 var User = require('../models').User;
 var UserWishlist = require('../models').UserWishlist;
-
-
 
 const createUser = asyncHandler(async (req, res) => {
   const { email, mobile, password, firstname, lastname,role } = req.body;
 
-  //console.log(req.body)
    if (!email || !password || !firstname || !lastname) {
     return res.status(400).json({ message: "Firstname, lastname, email e senha são obrigatórios." });
   }
@@ -69,7 +65,6 @@ const loginHandler = async ({ email, password, role }) => {
     { where: { id: user.id } }
   );
 
-  // Monta dados do usuário para retorno
   const userData = {
     id: user.id,
     firstname: user.firstname,
@@ -79,7 +74,6 @@ const loginHandler = async ({ email, password, role }) => {
     role: user.role,
     token: generateToken(user.id),
   };
-
   return { userData, refreshToken };
 };
 
@@ -155,7 +149,7 @@ const logout = asyncHandler(async (req, res) => {
       secure: true,
       sameSite: "None",
     });
-    return res.sendStatus(204); // No Content
+    return res.sendStatus(204); 
   }
 
   await user.update({ refreshToken: null });
@@ -166,17 +160,11 @@ const logout = asyncHandler(async (req, res) => {
     sameSite: "None",
   });
 
-  res.sendStatus(204); // No Content
+  res.sendStatus(204); 
 });
 
 const updatedUser = asyncHandler(async (req, res) => {
   const userId= req.params.id;
-
-
-
-
- // validateId(userId); // valide conforme sua regra
-
   const { firstname, lastname, email, mobile } = req.body;
   const updateData = { firstname, lastname, email, mobile };
 
@@ -188,11 +176,8 @@ const updatedUser = asyncHandler(async (req, res) => {
     }
 
     await user.update(updateData);
-
     res.json(user);
   } catch (error) {
-
-
     res.status(500).json({ message: error.message || "Error updating user", 
       userId: userId || "Unknown",
       updateData: updateData
@@ -203,9 +188,7 @@ const updatedUser = asyncHandler(async (req, res) => {
 
 const saveAddress = asyncHandler(async (req, res) => {
   const userId = req.user.id;
-
   validateId(userId);
-
   const { address } = req.body;
 
   try {
@@ -214,9 +197,7 @@ const saveAddress = asyncHandler(async (req, res) => {
       res.status(404);
       throw new Error("User not found");
     }
-
     await user.update({ address });
-
     res.json(user);
   } catch (error) {
     res.status(500);
@@ -224,14 +205,13 @@ const saveAddress = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getAllUsers = asyncHandler(async (req, res) => {
   try {
     const users = await User.findAll({
       include: [
         {
-          model: UserWishlist, // modelo associado
-          as: "wishlist", // o alias usado na associação, ajuste conforme seu setup
+          model: UserWishlist, 
+          as: "wishlist",
         },
       ],
     });
@@ -245,7 +225,6 @@ const getAllUsers = asyncHandler(async (req, res) => {
 const getAUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateId(id);
-
   try {
     const user = await User.findByPk(id, {
       include: [
@@ -255,12 +234,10 @@ const getAUser = asyncHandler(async (req, res) => {
         },
       ],
     });
-
     if (!user) {
       res.status(404);
       throw new Error("User not found");
     }
-
     res.json(user);
   } catch (error) {
     res.status(500);
@@ -272,27 +249,22 @@ const getUserProfile = asyncHandler(async (req, res) => {
   const user = await User.findByPk(req.user.id, {
     attributes: { exclude: ['password'] },
   });
-
   if (!user) {
     return res.status(404).json({ message: "Usuário não encontrado" });
   }
-
   res.json(user);
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateId(id);
-
   try {
     const deleted = await User.destroy({
       where: { id }
     });
-
     if (!deleted) {
       return res.status(404).json({ message: "Usuário não encontrado para deletar" });
     }
-
     res.json({ message: "Usuário deletado com sucesso" });
   } catch (error) {
     res.status(500);
@@ -303,19 +275,14 @@ const deleteUser = asyncHandler(async (req, res) => {
 const blockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateId(id);
-
   try {
-    // Atualiza o campo isBlocked para true
     const [updatedRows] = await User.update(
       { isBlocked: true },
       { where: { id } }
     );
-
     if (updatedRows === 0) {
       return res.status(404).json({ message: "Usuário não encontrado para bloquear" });
     }
-
-    // Buscar usuário atualizado para retorno
     const blockedUser = await User.findByPk(id);
     res.json(blockedUser);
   } catch (error) {
@@ -327,17 +294,14 @@ const blockUser = asyncHandler(async (req, res) => {
 const unblockUser = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateId(id);
-
   try {
     const [updatedRows] = await User.update(
       { isBlocked: false },
       { where: { id } }
     );
-
     if (updatedRows === 0) {
       return res.status(404).json({ message: "Usuário não encontrado para desbloquear" });
     }
-
     const unblockedUser = await User.findByPk(id);
     res.json({ message: "Usuário desbloqueado com sucesso", user: unblockedUser });
   } catch (error) {
@@ -349,27 +313,22 @@ const unblockUser = asyncHandler(async (req, res) => {
 const updatePassword = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const { password } = req.body;
-
   validateId(userId);
-
   if (!password) {
     return res.status(400).json({ message: "Password is required" });
   }
-
-  // Buscar usuário
   const user = await User.findByPk(userId);
   if (!user) {
     return res.status(404).json({ message: "Usuário não encontrado" });
   }
 
-  // Atualizar senha com hash (supondo método setPassword no modelo Sequelize)
-  user.password = password; // se usa hook para hash no model
+  user.password = password;
   await user.save();
 
   res.json({
     message: "Senha atualizada com sucesso",
     user: {
-      _id: user.id,  // Sequelize usa id por padrão
+      _id: user.id,
       email: user.email,
       firstname: user.firstname,
       lastname: user.lastname,
@@ -379,36 +338,28 @@ const updatePassword = asyncHandler(async (req, res) => {
 
 const forgotPasswordToken = asyncHandler(async (req, res) => {
   const { email } = req.body;
-
   if (!email) {
     return res.status(400).json({ message: "Email é obrigatório" });
   }
-
   const user = await User.findOne({ where: { email } });
   if (!user) {
     return res.status(404).json({ message: "Usuário não encontrado com este email" });
   }
-
   try {
-    // Supondo que o método createPasswordResetToken seja implementado no modelo User
     const token = await user.createPasswordResetToken();
     await user.save();
-
     const resetURL = `
       Hi, Please follow this link to reset Your Password.
       This link is valid for 10 minutes.
       <a href="http://localhost:5000/api/user/reset-password/${token}">Click Here</a>
     `;
-
     const emailData = {
       to: email,
       text: "Password reset request",
       subject: "Forgot Password Link",
       html: resetURL,
     };
-
     await sendEmail(emailData);
-
     res.json({ message: "Link para resetar a senha enviado para o email", token });
   } catch (error) {
     res.status(500);
@@ -423,14 +374,11 @@ const resetPassword = asyncHandler(async (req, res) => {
   if (!password) {
     return res.status(400).json({ message: "Password é obrigatório" });
   }
-
   const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
-
-  // Buscar usuário pelo token e que o token não tenha expirado
   const user = await User.findOne({
     where: {
       passwordResetToken: hashedToken,
-      passwordResetExpires: { [Op.gt]: new Date() }, // Op.gt > now
+      passwordResetExpires: { [Op.gt]: new Date() }, 
     },
   });
 
@@ -438,13 +386,11 @@ const resetPassword = asyncHandler(async (req, res) => {
     return res.status(400).json({ message: "Token expirado ou inválido. Por favor, tente novamente." });
   }
 
-  // Atualizar senha e limpar campos de reset
-  user.password = password;  // Hash via hook do model Sequelize
+  user.password = password;
   user.passwordResetToken = null;
   user.passwordResetExpires = null;
 
   await user.save();
-
   res.json({ message: "Senha resetada com sucesso" });
 });
 

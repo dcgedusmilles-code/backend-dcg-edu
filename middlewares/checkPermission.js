@@ -6,15 +6,11 @@ const roles = require("../utils/roles");
  */
 const checkPermission = (action) => {
   return (req, res, next) => {
-    
     const userRole = req.user?.role;
-
-    // Verifica se a role existe e se tem permissão para a ação
     if (!userRole || !roles[userRole]?.includes(action)) {
       return res.status(403).json({ message: "Acesso negado: permissão insuficiente." });
     }
-
-    next(); // Permissão concedida
+    next(); 
   };
 };
 

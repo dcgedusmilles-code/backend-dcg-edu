@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Coupon = require('../models').Coupon;
 
-// Criar cupom
 const createCoupon = asyncHandler(async (req, res) => {
   try {
     const newCoupon = await Coupon.create(req.body);
@@ -11,7 +10,6 @@ const createCoupon = asyncHandler(async (req, res) => {
   }
 });
 
-// Buscar todos os cupons
 const getAllCoupons = asyncHandler(async (req, res) => {
   try {
     const coupons = await Coupon.findAll();
@@ -21,7 +19,6 @@ const getAllCoupons = asyncHandler(async (req, res) => {
   }
 });
 
-// Atualizar cupom
 const updateCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -33,7 +30,6 @@ const updateCoupon = asyncHandler(async (req, res) => {
   }
 });
 
-// Deletar cupom
 const deleteCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
@@ -48,7 +44,6 @@ const deleteCoupon = asyncHandler(async (req, res) => {
   }
 });
 
-// Buscar cupom por ID
 const getCoupon = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {

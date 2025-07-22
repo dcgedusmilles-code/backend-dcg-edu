@@ -2,8 +2,6 @@ const nodemailer = require("nodemailer");
 const asyncHandler = require("express-async-handler");
 const ContactMessage = require('../models').ContactMessage;
 
-
-// Validações
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 const isValidName = (name) => /^[a-zA-Z\s]+$/.test(name);
 
@@ -23,9 +21,7 @@ const sendEmail = asyncHandler(async (req, res) => {
   }
 
   try {
-    // 🔽 SALVA NO BANCO (MySQL)
     await ContactMessage.create({ name, email, message });
-
     // const transporter = nodemailer.createTransport({
     //   host: "smtp.gmail.com",
     //   port: 587,
@@ -52,8 +48,6 @@ const sendEmail = asyncHandler(async (req, res) => {
   }
 });
 
-
-// GET ALL
 const getallSendEmail = asyncHandler(async (req, res) => {
   try {
     const emailSend = await ContactMessage.findAll();
@@ -63,7 +57,6 @@ const getallSendEmail = asyncHandler(async (req, res) => {
   }
 });
 
-// GET ONE
 const getASendEmail = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
@@ -79,16 +72,13 @@ const getASendEmail = asyncHandler(async (req, res) => {
   }
 });
 
-// DELETE
 const deleteSendEmail = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
   try {
     const SendEmail = await ContactMessage.findByPk(id);
     if (!SendEmail) {
       return res.status(404).json({ message: "Email not found" });
     }
-
     await SendEmail.destroy();
     res.status(200).json({ message: "Email deleted successfully" });
   } catch (error) {

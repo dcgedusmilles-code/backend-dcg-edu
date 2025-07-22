@@ -2,7 +2,6 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// Configuração do Storage do Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dest = path.join(__dirname, "../public/images/temp");
