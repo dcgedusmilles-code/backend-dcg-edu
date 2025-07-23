@@ -1,0 +1,38 @@
+# Docker-compose.yml
+
+version: '3.8'
+
+services:
+
+  app:
+    build: .
+    container_name: node_app
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+
+    environment:
+      DB_HOST: ${MYSQL_HOST}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASS}
+      DB_NAME: ${MYSQL_DB}
+      DB_PORT: ${MYSQL_PORT}
+    
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+      MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+    ports:
+      - "${MYSQL_PORT}:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    
+
+    
