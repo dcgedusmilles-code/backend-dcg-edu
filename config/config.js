@@ -16,8 +16,8 @@ module.exports = {
   test: {
     username: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASS,
-    database: process.env.MYSQL_DB_TEST, // Ex: "regizgrafica_test"
-    host: '127.0.0.1',
+    database: process.env.MYSQL_DB, // Ex: "regizgrafica_test"
+    host: process.env.MYSQL_HOST,
     dialect: 'mysql'
   },
   production: {

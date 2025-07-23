@@ -126,7 +126,6 @@ app.get("/", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-const server = http.createServer(app);
 // Inicialização da conexão com banco de dados
 sequelize.authenticate()
   .then(() => {
@@ -137,9 +136,7 @@ sequelize.authenticate()
     if (require.main === module) {
       // Rodando manualmente com `node server.js`
       const PORT = process.env.APP_PORT || 5000;
-      server.listen(PORT, () => {
-        console.log(`Servidor rodando na porta ${PORT}`);
-      });
+      app.listen(PORT, '0.0.0.0');
     } else {
       // Passenger irá cuidar da porta automaticamente
       console.log("App carregada via Passenger.");
