@@ -1,11 +1,12 @@
 const http = require("http");
+const https = require('https');
 const bodyParser = require("body-parser");
 const express = require("express");
 const { sequelize } = require("./models"); // já puxa dbConnect internamente
 const { notFound, errorHandler } = require("./middlewares/errorHandler");
-const app = express();
 require("dotenv").config(); // .env deve conter as infos do banco MySQL
 const PORT = process.env.APP_PORT || 5000;
+const app = express();
 
 // Rotas
 const authRouter = require("./routes/authRoute");
@@ -60,7 +61,16 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 // dbConnect();
 
 app.use(morgan("dev"));
-app.use(cors());
+app.use(cors({
+  origin : '*'
+}));
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+app.options('*', cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -93,29 +103,6 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use("/api/public", express.static(path.join(__dirname, "public")));
 app.use("/public", express.static(path.join(__dirname, "public")));
 
-// // Middlewares de erro
-// app.use(notFound);
-// app.use(errorHandler);
-
-
-// // Inicialização do servidor
-
-
-
-// sequelize.authenticate()
-//   .then(() => {
-//     console.log("Conexão com MySQL estabelecida.");
-//     return sequelize.sync(); // pode usar sync({ alter: true }) em dev
-//   })
-//   .then(() => {
-//     app.listen(PORT, () => {
-//       console.log(`Server is running at PORT ${PORT}`);
-//     });
-//   })
-//   .catch((err) => {
-//     console.error("Erro ao conectar ao banco:", err);
-//   });
-
 
 // Rota base
 app.get("/", (req, res) => {
@@ -136,7 +123,7 @@ sequelize.authenticate()
     if (require.main === module) {
       // Rodando manualmente com `node server.js`
       const PORT = process.env.APP_PORT || 5000;
-      app.listen(PORT, '0.0.0.0');
+      https.createServer(options, app).listen(PORT, '0.0.0.0');
     } else {
       // Passenger irá cuidar da porta automaticamente
       console.log("App carregada via Passenger.");
