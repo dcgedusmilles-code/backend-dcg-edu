@@ -1,5 +1,4 @@
 # Docker-compose.yml
-version: '3.8'
 
 services:
   mysql:
@@ -14,7 +13,7 @@ services:
     ports:
       - "${MYSQL_PORT}:3306"
     networks:
-      - backend
+      - mynetwork
     volumes:
       - ./mysql_data:/var/lib/mysql
     
@@ -33,7 +32,8 @@ services:
       DB_PASSWORD: ${MYSQL_PASS}
       DB_NAME: ${MYSQL_DB}
     networks:
-      - backend
+      - mynetwork
 
 networks:
-  backend:
+  mynetwork:
+    driver: bridge
