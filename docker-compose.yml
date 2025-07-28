@@ -33,7 +33,7 @@ services:
       DB_PASSWORD: ${MYSQL_PASS}
       DB_NAME: ${MYSQL_DB}
     networks:
-      backend:
+      - backend
 
 networks:
   backend:
