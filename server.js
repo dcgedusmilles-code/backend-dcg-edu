@@ -122,8 +122,9 @@ sequelize.authenticate()
   .then(() => {
     if (require.main === module) {
       // Rodando manualmente com `node server.js`
+      // http.createServer(options, app).listen(PORT, '0.0.0.0');
       const PORT = process.env.APP_PORT || 5000;
-      http.createServer(options, app).listen(PORT, '0.0.0.0');
+      app.listen(PORT, '0.0.0.0');
     } else {
       // Passenger irá cuidar da porta automaticamente
       console.log("App carregada via Passenger.");
