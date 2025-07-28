@@ -23,14 +23,15 @@ services:
     ports:
       - "${APP_PORT}:3000"
     container_name: node_app
+    restart: always
+    depends_on:
+      - mysql
     environment:
       DB_HOST: ${MYSQL_HOST}
       DB_PORT: ${MYSQL_PORT}
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASS}
       DB_NAME: ${MYSQL_DB}
-    depends_on:
-      - mysql
     networks:
       backend:
 
