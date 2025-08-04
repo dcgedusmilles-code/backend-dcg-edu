@@ -13,7 +13,7 @@ const authRouter = require("./routes/authRoute");
 const projectsRouter = require("./routes/projectsRoute");
 
 const productRouter = require("./routes/productRoute");
-// const categoryRouter = require("./routes/productcategoryRoute");
+const categoryRouter = require("./routes/productcategoryRoute");
 
 const blogRouter = require("./routes/blogRoute");
 const blogcategoryRouter = require("./routes/blogCatRoute");
@@ -85,7 +85,7 @@ app.use("/api/service/category", serviceCategoryRoutes);
 app.use("/api/product", productRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/blog", blogRouter);
-// app.use("/api/product/category", categoryRouter);
+app.use("/api/product/category", categoryRouter);
 app.use("/api/blogcategory", blogcategoryRouter);
 app.use("/api/portfolio", portfolioRouter);
 app.use("/api/portfolio/category", portfolioCategoryRouter);
