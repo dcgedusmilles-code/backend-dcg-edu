@@ -1,0 +1,58 @@
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    await queryInterface.createTable('market_researches', {
+      id: {
+        allowNull: false,
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER
+      },
+      titulo: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      descricao: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      objetivo: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      publico_alvo: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      data_inicio: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      data_fim: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      resultado_resumido: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      }
+    });
+  },
+
+  async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('market_researches');
+  }
+};
