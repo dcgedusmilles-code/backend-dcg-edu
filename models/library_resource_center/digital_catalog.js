@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'CatalogoDigital',
     tableName: 'digital_catalogs',
     timestamps: true,
-    underscored: true
+    
   });
   return CatalogoDigital;
 };

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'MetaComercial',
     tableName: 'meta_comercials',
     timestamps: true,
-    underscored: true
+    
   });
     return MetaComercial;
 };

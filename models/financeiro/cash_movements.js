@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'CaixaMovimento',
         tableName: 'cash_movementss',
         timestamps: true,
-        underscored: true
+        
     });
     return CaixaMovimento;
 };

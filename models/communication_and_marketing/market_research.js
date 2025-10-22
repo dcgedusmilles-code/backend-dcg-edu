@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'PesquisaMercado',
         tableName: 'market_researches',
         timestamps: true,
-        underscored: true
+        
     });
     return PesquisaMercado;
 };

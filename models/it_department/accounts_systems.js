@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'ContaSistema',
         tableName: 'accounts_systemss',
         timestamps: true,
-        underscored: true
+        
     });
     return ContaSistema;
 };

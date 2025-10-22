@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'Local',
         tableName: 'locationss',
         timestamps: true,
-        underscored: true
+        
     });
     return Local;
 };

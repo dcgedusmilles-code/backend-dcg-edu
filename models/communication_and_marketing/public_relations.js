@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'RelacaoPublica',
         tableName: 'public_relationss',
         timestamps: true,
-        underscored: true
+        
     });
     return RelacaoPublica;
 };

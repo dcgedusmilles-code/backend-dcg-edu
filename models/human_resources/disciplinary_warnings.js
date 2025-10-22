@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'AdvertenciaDisciplina',
         tableName: 'disciplinary_warningss',
         timestamps: true,
-        underscored: true
+        
     });
     return AdvertenciaDisciplina;
 };

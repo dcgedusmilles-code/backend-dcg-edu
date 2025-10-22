@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'Inadimplencia',
         tableName: 'default_reports',
         timestamps: true,
-        underscored: true
+        
     });
     return Inadimplencia;
 };

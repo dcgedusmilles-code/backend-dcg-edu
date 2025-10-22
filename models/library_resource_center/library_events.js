@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'EventoBiblioteca',
         tableName: 'library_eventss',
         timestamps: true,
-        underscored: true
+        
     });
     return EventoBiblioteca;
 };

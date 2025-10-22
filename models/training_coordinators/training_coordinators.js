@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'CoordenadorTreinamento',
         tableName: 'training_coordinatorss',
         timestamps: true,
-        underscored: true
+        
     });
     return CoordenadorTreinamento;
 };

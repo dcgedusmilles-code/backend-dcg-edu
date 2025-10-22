@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'EstoqueLogistico',
         tableName: 'stock_logisticss',
         timestamps: true,
-        underscored: true
+        
     });
     return EstoqueLogistico;
 };

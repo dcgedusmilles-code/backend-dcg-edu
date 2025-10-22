@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'CampanhaCanal',
         tableName: 'campaign_channels',
         timestamps: true,
-        underscored: true
+        
     });
     return CampanhaCanal;
 };

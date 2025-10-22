@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'Patrimonio',
         tableName: 'heritages',
         timestamps: true,
-        underscored: true
+        
     });
     return Patrimonio;
 };

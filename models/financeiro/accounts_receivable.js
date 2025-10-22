@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'ContaReceber',
         tableName: 'accounts_receivables',
         timestamps: true,
-        underscored: true
+        
     });
     return ContaReceber;
 };

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Turma',
     tableName: 'class_teachers',
     timestamps: true,
-    underscored: true
+    
   });
   return Turma;
 };

@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'CalendarioAcademico',
     tableName: 'academic_calendars',
     timestamps: true,
-    underscored: true
+    
   });
   return CalendarioAcademico;
 };

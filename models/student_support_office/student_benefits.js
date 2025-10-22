@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'BeneficioEstudantil',
         tableName: 'student_benefitss',
         timestamps: true,
-        underscored: true
+        
     });
     return BeneficioEstudantil;
 };

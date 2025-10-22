@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'EventoApoio',
         tableName: 'events_supports',
         timestamps: true,
-        underscored: true
+        
     });
     return EventoApoio;
 };

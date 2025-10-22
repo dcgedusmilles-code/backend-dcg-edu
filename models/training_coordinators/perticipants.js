@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'Participante',
         tableName: 'perticipantss',
         timestamps: true,
-        underscored: true
+        
     });
     return Participante;
 };

@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'BolsaEstudantil',
         tableName: 'student_scholarshipss',
         timestamps: true,
-        underscored: true
+        
     });
     return BolsaEstudantil;
 };

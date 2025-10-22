@@ -21,7 +21,7 @@ fs.readdirSync(modelsDir).forEach(file => {
         if (!content.includes('tableName:')) {
             content = content.replace(
                 /(\}\s*\)\s*;\s*return\s+\w+;)/,
-                `    tableName: '${tableName}',\n    timestamps: true,\n    underscored: true,\n$1`
+                `    tableName: '${tableName}',\n    timestamps: true,\n    ,\n$1`
             );
         }
 

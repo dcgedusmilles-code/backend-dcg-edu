@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'AgendamentoAtendimento',
         tableName: 'appointment_schedulings',
         timestamps: true,
-        underscored: true
+        
     });
     return AgendamentoAtendimento;
 };

@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'Coordenador',
     tableName: 'coordinators',
     timestamps: true,
-    underscored: true
+    
   });
   return Coordenador;
 };

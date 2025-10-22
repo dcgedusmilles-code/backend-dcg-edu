@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         modelName: 'LogAcesso',
         tableName: 'logs_accesss',
         timestamps: true,
-        underscored: true
+        
     });
     return LogAcesso;
 };
