@@ -1,4 +1,4 @@
-# Docker-compose.yml
+version: '3.9'
 
 services:
   mysql:
@@ -6,34 +6,81 @@ services:
     container_name: mysql_db
     restart: always
     environment:
-      MYSQL_USER: ${MYSQL_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
-      MYSQL_PASSWORD: ${MYSQL_PASS}
       MYSQL_DATABASE: ${MYSQL_DB}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
     ports:
       - "${MYSQL_PORT}:3306"
     networks:
       - mynetwork
     volumes:
       - ./mysql_data:/var/lib/mysql
-    
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
     build: .
-    ports:
-      - "${APP_PORT}:3000"
     container_name: node_app
     restart: always
+    ports:
+      - "${APP_PORT}:3000"
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
     environment:
-      DB_HOST: ${MYSQL_HOST}
-      DB_PORT: ${MYSQL_PORT}
+      DB_HOST: mysql               # 👈 Nome do serviço, não do container
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DB}
       DB_USER: ${MYSQL_USER}
       DB_PASSWORD: ${MYSQL_PASS}
-      DB_NAME: ${MYSQL_DB}
     networks:
       - mynetwork
 
 networks:
   mynetwork:
     driver: bridge
+
+
+# # Docker-compose.yml
+
+# services:
+#   mysql:
+#     image: mysql:8
+#     container_name: mysql_db
+#     restart: always
+#     environment:
+#       MYSQL_USER: ${MYSQL_USER}
+#       MYSQL_DATABASE: ${MYSQL_DB}
+#       MYSQL_ROOT_PASSWORD: ${MYSQL_PASS}
+#       MYSQL_PASSWORD: ${MYSQL_PASS}
+#     ports:
+#       - "${MYSQL_PORT}:3306"
+#     networks:
+#       - mynetwork
+#     volumes:
+#       - ./mysql_data:/var/lib/mysql
+    
+#   app:
+#     build: .
+#     ports:
+#       - "${APP_PORT}:3000"
+#     container_name: node_app
+#     restart: always
+#     depends_on:
+#       - mysql
+#     environment:
+#       DB_HOST: ${MYSQL_HOST}
+#       DB_NAME: ${MYSQL_DB}
+#       DB_PORT: ${MYSQL_PORT}
+#       DB_USER: ${MYSQL_USER}
+#       DB_PASSWORD: ${MYSQL_PASS}
+#     networks:
+#       - mynetwork
+
+# networks:
+#   mynetwork:
+#     driver: bridge

@@ -56,6 +56,15 @@ app.get("/", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
+(async () => {
+  try {
+    await sequelize.sync({ alter: true }); // ou force  { alter: true } para não apagar tudo
+    console.log('✅ Tabelas sincronizadas com sucesso!');
+  } catch (error) {
+    console.error('❌ Erro ao sincronizar tabelas:', error);
+  }
+})();
+
 // Inicialização da conexão com banco de dados
 sequelize.authenticate().then(() => {
     console.log("Conexão com MySQL estabelecida.");

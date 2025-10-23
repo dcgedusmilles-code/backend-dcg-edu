@@ -13,7 +13,7 @@ module.exports = {
       },
       id_campanha: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'campanhas', // nome da tabela associada
           key: 'id'
