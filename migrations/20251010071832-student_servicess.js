@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Criação da tabela sem FKs inicialmente
     await queryInterface.createTable('student_servicess', {
       id: {
         allowNull: false,
@@ -13,13 +14,7 @@ module.exports = {
       },
       id_estudante: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'students', // nome da tabela associada à model Aluno (ajuste se necessário)
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK adicionada depois
       },
       tipo: {
         type: Sequelize.STRING,
@@ -35,33 +30,33 @@ module.exports = {
       },
       responsavel: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'employees', // nome da tabela associada à model Funcionario (ajuste se necessário)
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK adicionada depois
       },
       status: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 'pendente'
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+
+    // Índices para consultas rápidas
+    await queryInterface.addIndex('student_servicess', ['id_estudante']);
+    await queryInterface.addIndex('student_servicess', ['responsavel']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeIndex('student_servicess', ['id_estudante']);
+    await queryInterface.removeIndex('student_servicess', ['responsavel']);
     await queryInterface.dropTable('student_servicess');
   }
 };
-

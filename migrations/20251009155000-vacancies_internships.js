@@ -13,13 +13,7 @@ module.exports = {
       },
       id_empresa: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'partner_companies', // tabela correspondente a EmpresaParceira
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK será adicionada em outra migration
       },
       titulo_vaga: {
         type: Sequelize.STRING,
@@ -51,7 +45,8 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 'aberta'
       },
       created_at: {
         allowNull: false,
@@ -66,8 +61,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('vacancies_internships');
   }
 };
-

@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela sem FK inicialmente
     await queryInterface.createTable('library_eventss', {
       id: {
         allowNull: false,
@@ -37,29 +38,26 @@ module.exports = {
       },
       responsavel: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'funcionarios', // tabela do modelo Funcionario
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK adicionada depois
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+
+    // Índice para buscas rápidas
+    await queryInterface.addIndex('library_eventss', ['responsavel']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeIndex('library_eventss', ['responsavel']);
     await queryInterface.dropTable('library_eventss');
   }
 };
-

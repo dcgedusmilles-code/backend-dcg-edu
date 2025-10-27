@@ -20,8 +20,8 @@ jobs:
     - name: Deploy on VPS
       run: |
         ssh -o StrictHostKeyChecking=no root@93.115.21.183 'bash -s' <<'ENDSSH'
-          cd /root/regiz_site_backend || git clone git@github.com:regizgrafica/regiz_site_backend.git /root/regiz_site_backend
-          cd /root/regiz_site_backend
+          cd /root/backend-dcg-edu || git clone https://github.com/dcgedusmilles-code/backend-dcg-edu.git /root/backend-dcg-edu
+          cd /root/backend-dcg-edu
           git pull origin main
           docker-compose down
           docker-compose up -d --build

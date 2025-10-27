@@ -1,7 +1,6 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('applications_internshipss', {
@@ -13,23 +12,11 @@ module.exports = {
       },
       id_vaga: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'internship_vacancies', // nome da tabela de VagaEstagio
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // será FK depois
       },
       id_estudante: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'students', // nome da tabela de Aluno
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // será FK depois
       },
       data_candidatura: {
         type: Sequelize.DATE,
@@ -54,8 +41,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('applications_internshipss');
   }
 };
-

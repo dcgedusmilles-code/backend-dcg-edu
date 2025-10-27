@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela sem foreign keys inicialmente
     await queryInterface.createTable('secretariat_staffs', {
       id: {
         allowNull: false,
@@ -13,23 +14,11 @@ module.exports = {
       },
       secretaria_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'academic_secretariats', // tabela correspondente ao model SecretariaAcademica
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       funcionario_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'employees', // tabela correspondente ao model Funcionario
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       created_at: {
         allowNull: false,
@@ -42,10 +31,15 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+
+    // Índices opcionais para performance em joins
+    await queryInterface.addIndex('secretariat_staffs', ['secretaria_id']);
+    await queryInterface.addIndex('secretariat_staffs', ['funcionario_id']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeIndex('secretariat_staffs', ['secretaria_id']);
+    await queryInterface.removeIndex('secretariat_staffs', ['funcionario_id']);
     await queryInterface.dropTable('secretariat_staffs');
   }
 };
-

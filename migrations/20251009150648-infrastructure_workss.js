@@ -1,9 +1,9 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // 1️⃣ Cria a tabela sem foreign keys
     await queryInterface.createTable('infrastructure_workss', {
       id: {
         allowNull: false,
@@ -21,23 +21,11 @@ module.exports = {
       },
       local: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'locais', // tabela referenciada
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK virá depois
       },
       fornecedor: {
         type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: 'fornecedors', // tabela referenciada
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK virá depois
       },
       custo_estimado: {
         type: Sequelize.FLOAT,
@@ -72,8 +60,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('infrastructure_workss');
   }
 };
-

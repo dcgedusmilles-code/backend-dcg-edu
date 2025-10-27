@@ -1,9 +1,9 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela sem foreign keys
     await queryInterface.createTable('heritages', {
       id: {
         allowNull: false,
@@ -42,13 +42,7 @@ module.exports = {
       },
       localizacao: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'locais', // tabela relacionada
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK virá depois
       },
       created_at: {
         allowNull: false,
@@ -63,8 +57,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('heritages');
   }
 };
-

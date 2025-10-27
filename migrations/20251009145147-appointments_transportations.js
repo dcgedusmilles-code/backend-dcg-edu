@@ -1,9 +1,9 @@
 'use strict';
 
 /** @type {import('sequelize-cli').Migration} */
-
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela SEM as chaves estrangeiras
     await queryInterface.createTable('appointments_transportations', {
       id: {
         allowNull: false,
@@ -13,13 +13,7 @@ module.exports = {
       },
       id_transporte: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'transportes', // tabela referenciada
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true
       },
       finalidade: {
         type: Sequelize.STRING,
@@ -27,13 +21,7 @@ module.exports = {
       },
       motorista: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'funcionarios', // tabela referenciada
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true
       },
       origem: {
         type: Sequelize.STRING,
@@ -68,8 +56,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('appointments_transportations');
   }
 };
-

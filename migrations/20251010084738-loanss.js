@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela sem as FKs inicialmente
     await queryInterface.createTable('loanss', {
       id: {
         allowNull: false,
@@ -13,23 +14,11 @@ module.exports = {
       },
       id_exemplar: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'exemplars', // tabela referenciada pelo modelo Exemplar
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK adicionada depois
       },
       id_usuario: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users_librarys', // tabela referenciada pelo modelo UsuarioBiblioteca
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK adicionada depois
       },
       data_emprestimo: {
         type: Sequelize.DATE,
@@ -62,8 +51,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('loanss');
   }
 };
-

@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // 1️⃣ Criação da tabela principal
     await queryInterface.createTable('internship_reportss', {
       id: {
         allowNull: false,
@@ -13,13 +14,7 @@ module.exports = {
       },
       id_estagio: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'internships', // nome da tabela associada à model Estagio (ajuste se for diferente)
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true
       },
       titulo: {
         type: Sequelize.STRING,
@@ -40,17 +35,19 @@ module.exports = {
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+  
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeConstraint('internship_reportss', 'fk_internship_reportss_estagio');
     await queryInterface.dropTable('internship_reportss');
   }
 };

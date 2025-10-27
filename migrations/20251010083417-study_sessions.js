@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela sem FK inicialmente
     await queryInterface.createTable('study_sessions', {
       id: {
         allowNull: false,
@@ -13,13 +14,7 @@ module.exports = {
       },
       id_usuario: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users_librarys', // tabela referenciada
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       local: {
         type: Sequelize.STRING,
@@ -49,10 +44,13 @@ module.exports = {
         defaultValue: Sequelize.NOW
       }
     });
+
+    // Adiciona índice (melhora performance em joins e buscas)
+    await queryInterface.addIndex('study_sessions', ['id_usuario']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeIndex('study_sessions', ['id_usuario']);
     await queryInterface.dropTable('study_sessions');
   }
 };
-

@@ -13,13 +13,7 @@ module.exports = {
       },
       id_usuario: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'library_users', // tabela relacionada ao model UsuarioBiblioteca
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK será adicionada depois
       },
       titulo_sugerido: {
         type: Sequelize.STRING,
@@ -43,7 +37,8 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 'pendente'
       },
       created_at: {
         allowNull: false,
@@ -58,8 +53,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('acquisition_suggestionss');
   }
 };
-

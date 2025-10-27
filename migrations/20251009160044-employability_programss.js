@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Criação da tabela principal (sem FK)
     await queryInterface.createTable('employability_programss', {
       id: {
         allowNull: false,
@@ -33,29 +34,22 @@ module.exports = {
       },
       parceiro: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'partner_companies', // Nome da tabela de EmpresaParceira (ajusta se for diferente)
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('employability_programss');
   }
 };
-

@@ -13,33 +13,15 @@ module.exports = {
       },
       id_emprestimo: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'loanss', // tabela do modelo Emprestimo
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       id_usuario: {
         type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: 'users_librarys', // tabela do modelo UsuarioBiblioteca
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK será adicionada depois
       },
       aluno_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
-        references: {
-          model: 'alunos', // tabela do modelo Aluno
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK será adicionada depois
       },
       valor: {
         type: Sequelize.FLOAT,
@@ -71,8 +53,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('finess');
   }
 };
-

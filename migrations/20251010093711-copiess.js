@@ -13,13 +13,7 @@ module.exports = {
       },
       id_item: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'acervos', // tabela de referência
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       codigo_exemplar: {
         type: Sequelize.STRING,
@@ -36,18 +30,17 @@ module.exports = {
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.fn('NOW')
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.fn('NOW')
       }
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('copiess');
   }
 };
-

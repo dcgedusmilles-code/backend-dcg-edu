@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela primeiro, sem FKs
     await queryInterface.createTable('student_in_charges', {
       id: {
         allowNull: false,
@@ -13,23 +14,11 @@ module.exports = {
       },
       aluno_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'students', // tabela correspondente ao model Aluno
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       encarregado_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'guardians', // tabela correspondente ao model Encarregado
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       tipo_responsabilidade: {
         type: Sequelize.STRING,
@@ -46,10 +35,15 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+
+    // Índices para performance em joins
+    await queryInterface.addIndex('student_in_charges', ['aluno_id']);
+    await queryInterface.addIndex('student_in_charges', ['encarregado_id']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeIndex('student_in_charges', ['aluno_id']);
+    await queryInterface.removeIndex('student_in_charges', ['encarregado_id']);
     await queryInterface.dropTable('student_in_charges');
   }
 };
-

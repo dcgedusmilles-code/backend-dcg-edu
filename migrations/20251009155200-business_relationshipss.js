@@ -13,13 +13,7 @@ module.exports = {
       },
       id_empresa: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'partner_companies', // nome da tabela de EmpresaParceira — ajusta conforme tua base
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       tipo: {
         type: Sequelize.STRING,
@@ -52,8 +46,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     await queryInterface.dropTable('business_relationshipss');
   }
 };
-

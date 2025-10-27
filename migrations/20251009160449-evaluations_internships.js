@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Cria a tabela principal sem FK inicialmente
     await queryInterface.createTable('evaluations_internships', {
       id: {
         allowNull: false,
@@ -13,13 +14,7 @@ module.exports = {
       },
       id_estagio: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'internships', // Nome da tabela associada à model Estagio (ajuste se for diferente)
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK adicionada depois
       },
       avaliador: {
         type: Sequelize.STRING,
@@ -48,18 +43,21 @@ module.exports = {
       created_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updated_at: {
         allowNull: false,
         type: Sequelize.DATE,
-        defaultValue: Sequelize.NOW
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+
+    // Índice opcional para otimizar busca por estágio
+    await queryInterface.addIndex('evaluations_internships', ['id_estagio']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeIndex('evaluations_internships', ['id_estagio']);
     await queryInterface.dropTable('evaluations_internships');
   }
 };
-

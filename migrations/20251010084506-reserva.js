@@ -4,7 +4,8 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('reserva', {
+    // Cria a tabela sem as FKs inicialmente
+    await queryInterface.createTable('reservas', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -13,23 +14,11 @@ module.exports = {
       },
       id_exemplar: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'exemplars', // nome da tabela de Exemplar
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       id_usuario: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'users_librarys', // nome da tabela de UsuarioBiblioteca
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        allowNull: true // FK será adicionada depois
       },
       data_reserva: {
         type: Sequelize.DATE,
@@ -54,8 +43,7 @@ module.exports = {
     });
   },
 
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('reserva');
+  async down(queryInterface) {
+    await queryInterface.dropTable('reservas');
   }
 };
-

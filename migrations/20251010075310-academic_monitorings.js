@@ -4,6 +4,7 @@
 
 module.exports = {
   async up(queryInterface, Sequelize) {
+    // Criação da tabela principal (sem FK inicialmente)
     await queryInterface.createTable('academic_monitorings', {
       id: {
         allowNull: false,
@@ -13,17 +14,11 @@ module.exports = {
       },
       id_estudante: {
         type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: 'students', // tabela relacionada à model Aluno
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'SET NULL'
+        allowNull: true // FK adicionada depois
       },
       tipo: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: false
       },
       descricao: {
         type: Sequelize.TEXT,
@@ -39,7 +34,8 @@ module.exports = {
       },
       status: {
         type: Sequelize.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: 'ativo'
       },
       created_at: {
         allowNull: false,
@@ -52,10 +48,13 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
+
+    // Índice para buscas por estudante
+    await queryInterface.addIndex('academic_monitorings', ['id_estudante']);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
+    await queryInterface.removeIndex('academic_monitorings', ['id_estudante']);
     await queryInterface.dropTable('academic_monitorings');
   }
 };
-
