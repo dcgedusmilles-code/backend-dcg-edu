@@ -48,11 +48,11 @@ const controller = require('../../controllers/commercial/commercial_goals_contro
  *           type: string
  *           description: Estado atual da meta (ex: ativa, concluída, cancelada)
  *           example: "Ativa"
- *         created_at:
+ *         createdAt:
  *           type: string
  *           format: date-time
  *           example: "2025-10-09T12:00:00Z"
- *         updated_at:
+ *         updatedAt:
  *           type: string
  *           format: date-time
  *           example: "2025-10-09T14:00:00Z"

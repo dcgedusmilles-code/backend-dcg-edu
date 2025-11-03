@@ -20,7 +20,7 @@ const produtoServicoController = require('../../controllers/commercial/products_
  *       200:
  *         description: Lista de produtos e serviços
  */
-router.get('/', produtoServicoController.listar);
+router.get('/all', produtoServicoController.listar);
 
 /**
  * @swagger
@@ -38,7 +38,7 @@ router.get('/', produtoServicoController.listar);
  *       200:
  *         description: Dados do produto/serviço
  */
-router.get('/:id', produtoServicoController.buscarPorId);
+router.get('/getById/:id', produtoServicoController.buscarPorId);
 
 /**
  * @swagger
@@ -67,7 +67,7 @@ router.get('/:id', produtoServicoController.buscarPorId);
  *       201:
  *         description: Produto/Serviço criado
  */
-router.post('/', produtoServicoController.criar);
+router.post('/create', produtoServicoController.criar);
 
 /**
  * @swagger
@@ -76,7 +76,7 @@ router.post('/', produtoServicoController.criar);
  *     summary: Atualizar produto/serviço
  *     tags: [ProdutosServicos]
  */
-router.put('/:id', produtoServicoController.atualizar);
+router.put('/update/:id', produtoServicoController.atualizar);
 
 /**
  * @swagger
@@ -85,6 +85,6 @@ router.put('/:id', produtoServicoController.atualizar);
  *     summary: Remover produto/serviço
  *     tags: [ProdutosServicos]
  */
-router.delete('/:id', produtoServicoController.remover);
+router.delete('/delete/:id', produtoServicoController.remover);
 
 module.exports = router;

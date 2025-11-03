@@ -20,7 +20,7 @@ const oportunidadeController = require('../../controllers/commercial/opportuniti
  *       200:
  *         description: Lista de oportunidades
  */
-router.get('/', oportunidadeController.listar);
+router.get('/all', oportunidadeController.listar);
 
 /**
  * @swagger
@@ -38,7 +38,7 @@ router.get('/', oportunidadeController.listar);
  *       200:
  *         description: Dados da oportunidade
  */
-router.get('/:id', oportunidadeController.buscarPorId);
+router.get('/getById/:id', oportunidadeController.buscarPorId);
 
 /**
  * @swagger
@@ -56,7 +56,7 @@ router.get('/:id', oportunidadeController.buscarPorId);
  *       201:
  *         description: Oportunidade criada
  */
-router.post('/', oportunidadeController.criar);
+router.post('/create', oportunidadeController.criar);
 
 /**
  * @swagger
@@ -65,7 +65,7 @@ router.post('/', oportunidadeController.criar);
  *     summary: Atualizar oportunidade
  *     tags: [Oportunidades]
  */
-router.put('/:id', oportunidadeController.atualizar);
+router.put('/update/:id', oportunidadeController.atualizar);
 
 /**
  * @swagger
@@ -74,6 +74,6 @@ router.put('/:id', oportunidadeController.atualizar);
  *     summary: Remover oportunidade
  *     tags: [Oportunidades]
  */
-router.delete('/:id', oportunidadeController.remover);
+router.delete('/delete/:id', oportunidadeController.remover);
 
 module.exports = router;

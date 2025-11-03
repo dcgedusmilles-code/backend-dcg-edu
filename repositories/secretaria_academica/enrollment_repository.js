@@ -62,7 +62,7 @@ class MatriculaRepository {
                         include: [{ association: 'disciplina', attributes: ['id', 'nome', 'codigo'] }]
                     }
                 ],
-                order: [['created_at', 'DESC']]
+                order: [['createdAt', 'DESC']]
             });
         } catch (err) {
             throw new Error(`Erro ao listar matrículas: ${err.message}`);

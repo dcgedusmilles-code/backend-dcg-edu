@@ -27,7 +27,7 @@ const authMiddleware = asyncHandler(async (req, res, next) => {
 });
 
 const isAdmin = (req, res, next) => {
-  if (!req.user || req.user.role !== "admin") {
+  if (!req.user || req.user.role !== "admin" || req.user.role !== "secretaria") {
     return res.status(403).json({ message: "Acesso negado: administrador apenas" });
   }
   next();

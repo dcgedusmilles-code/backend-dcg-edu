@@ -46,7 +46,7 @@ class TurmaRepository {
                     { association: 'curso', attributes: ['id', 'nome', 'codigo', 'duracao'] },
                     { association: 'coordenador', attributes: ['id', 'nome', 'email'] },
                 ],
-                order: [['created_at', 'DESC']]
+                order: [['createdAt', 'DESC']]
             });
         } catch (err) {
             throw new Error(`Erro ao listar turmas: ${err.message}`);

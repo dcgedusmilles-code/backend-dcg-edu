@@ -48,7 +48,7 @@ class CoordenadorRepository {
             attributes: ['id', 'nome', 'periodo', 'ano_letivo'],
           },
         ],
-        order: [['created_at', 'DESC']],
+        order: [['createdAt', 'DESC']],
       });
     } catch (err) {
       throw new Error(`Erro ao listar coordenadores: ${err.message}`);

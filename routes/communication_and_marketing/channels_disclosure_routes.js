@@ -16,7 +16,7 @@ const router = express.Router();
  *     summary: Lista todos canais de divulgação
  *     tags: [Canais de Divulgação]
  */
-router.get('/', canalController.findAll);
+router.get('/all', canalController.findAll);
 
 /**
  * @swagger
@@ -25,7 +25,7 @@ router.get('/', canalController.findAll);
  *     summary: Busca canal por ID
  *     tags: [Canais de Divulgação]
  */
-router.get('/:id', canalController.findById);
+router.get('/getById/:id', canalController.findById);
 
 /**
  * @swagger
@@ -34,7 +34,7 @@ router.get('/:id', canalController.findById);
  *     summary: Cria novo canal de divulgação
  *     tags: [Canais de Divulgação]
  */
-router.post('/', canalController.create);
+router.post('/create', canalController.create);
 
 /**
  * @swagger
@@ -43,7 +43,7 @@ router.post('/', canalController.create);
  *     summary: Atualiza canal existente
  *     tags: [Canais de Divulgação]
  */
-router.put('/:id', canalController.update);
+router.put('/update/:id', canalController.update);
 
 /**
  * @swagger
@@ -52,6 +52,6 @@ router.put('/:id', canalController.update);
  *     summary: Remove canal de divulgação
  *     tags: [Canais de Divulgação]
  */
-router.delete('/:id', canalController.delete);
+router.delete('/delete/:id', canalController.delete);
 
 module.exports = router;

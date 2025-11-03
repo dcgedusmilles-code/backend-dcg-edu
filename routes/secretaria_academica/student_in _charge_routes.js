@@ -19,7 +19,7 @@ const controller = require('../../controllers/secretaria_academica/student_in _c
  *       200:
  *         description: Lista de vínculos retornada
  */
-router.get('/', controller.getAll);
+router.get('/', controller.listarTodos);
 
 /**
  * @swagger
@@ -28,33 +28,6 @@ router.get('/', controller.getAll);
  *     summary: Obtém um vínculo específico por ID
  *     tags: [AlunoEncarregado]
  */
-router.get('/:id', controller.getById);
-
-/**
- * @swagger
- * /aluno-encarregado:
- *   post:
- *     summary: Cria um novo vínculo aluno-encarregado
- *     tags: [AlunoEncarregado]
- */
-router.post('/', controller.create);
-
-/**
- * @swagger
- * /aluno-encarregado/{id}:
- *   put:
- *     summary: Atualiza um vínculo existente
- *     tags: [AlunoEncarregado]
- */
-router.put('/:id', controller.update);
-
-/**
- * @swagger
- * /aluno-encarregado/{id}:
- *   delete:
- *     summary: Remove um vínculo aluno-encarregado
- *     tags: [AlunoEncarregado]
- */
-router.delete('/:id', controller.delete);
+router.get('/:id', controller.listarTodos);
 
 module.exports = router;

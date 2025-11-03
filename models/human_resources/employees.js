@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     class Funcionario extends Model {
         static associate(models) {
             Funcionario.belongsTo(models.Cargo, { foreignKey: 'cargo_id', as: 'cargo' });
+            Funcionario.belongsTo(models.User, { foreignKey: 'user_id', as: 'usuario' });
             Funcionario.hasMany(models.ContratoTrabalho, { foreignKey: 'funcionario_id', as: 'contratos' });
             Funcionario.hasMany(models.FolhaPagamento, { foreignKey: 'funcionario_id', as: 'folhas' });
             Funcionario.hasMany(models.Ferias, { foreignKey: 'funcionario_id', as: 'ferias' });

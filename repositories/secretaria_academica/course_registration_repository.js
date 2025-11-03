@@ -47,7 +47,7 @@ class InscricaoDisciplinaRepository {
                     { association: 'matricula', attributes: ['id', 'ano_letivo', 'status'] },
                     { association: 'disciplina', attributes: ['id', 'nome', 'codigo', 'carga_horaria'] }
                 ],
-                order: [['created_at', 'DESC']]
+                order: [['createdAt', 'DESC']]
             });
         } catch (err) {
             throw new Error(`Erro ao listar inscrições de disciplinas: ${err.message}`);

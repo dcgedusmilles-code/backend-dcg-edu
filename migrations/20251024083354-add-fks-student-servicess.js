@@ -23,7 +23,7 @@ module.exports = {
       type: 'foreign key',
       name: 'fk_student_servicess_funcionario',
       references: {
-        table: 'employees',
+        table: 'employeess',
         field: 'id'
       },
       onUpdate: 'CASCADE',

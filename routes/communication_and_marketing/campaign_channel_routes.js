@@ -20,7 +20,7 @@ const campanhaCanalController = require('../../controllers/communication_and_mar
  *       200:
  *         description: Lista de campanhas-canais
  */
-router.get('/', campanhaCanalController.findAll);
+router.get('/all', campanhaCanalController.findAll);
 
 /**
  * @swagger
@@ -38,7 +38,7 @@ router.get('/', campanhaCanalController.findAll);
  *       200:
  *         description: Dados da campanha-canal
  */
-router.get('/:id', campanhaCanalController.findById);
+router.get('/getById/:id', campanhaCanalController.findById);
 
 /**
  * @swagger
@@ -65,7 +65,7 @@ router.get('/:id', campanhaCanalController.findById);
  *       201:
  *         description: Campanha-canal criada
  */
-router.post('/', campanhaCanalController.create);
+router.post('/create/', campanhaCanalController.create);
 
 /**
  * @swagger
@@ -74,7 +74,7 @@ router.post('/', campanhaCanalController.create);
  *     summary: Atualizar vínculo de campanha com canal
  *     tags: [CampanhaCanais]
  */
-router.put('/:id', campanhaCanalController.update);
+router.put('/update/:id', campanhaCanalController.update);
 
 /**
  * @swagger
@@ -83,6 +83,6 @@ router.put('/:id', campanhaCanalController.update);
  *     summary: Remover vínculo de campanha com canal
  *     tags: [CampanhaCanais]
  */
-router.delete('/:id', campanhaCanalController.delete);
+router.delete('/delete/:id', campanhaCanalController.delete);
 
 module.exports = router;

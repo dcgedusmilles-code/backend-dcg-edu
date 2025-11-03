@@ -1,7 +1,7 @@
 {
-  "name": "regizapp-backend",
+  "name": "dcg-edu-backend",
   "version": "1.0.0",
-  "description": "Backend da API da Regiz Gráfica",
+  "description": "Backend da API da DCG-EDU",
   "main": "server.js",
   "scripts": {
     "gen:all": "node scripts/generate-migrations-seeders.js",
@@ -25,9 +25,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/regizgrafica/regiz_site_backend.git"
+    "url": "https://github.com/dcgedusmilles-code/backend-dcg-edu.git"
   },
-  "author": "kaizen-TI",
+  "author": "João Jamba - kaizen-TI",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

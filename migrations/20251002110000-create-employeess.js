@@ -1,4 +1,6 @@
 'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('employeess', {
@@ -8,47 +10,65 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-        nome: {
-          type: Sequelize.STRING
-        },
-        data_nascimento: {
-          type: Sequelize.DATE
-        },
-        sexo: {
-          type: Sequelize.STRING
-        },
-        email: {
-          type: Sequelize.STRING
-        },
-        telefone: {
-          type: Sequelize.STRING
-        },
-        documento: {
-          type: Sequelize.STRING
-        },
-        endereco: {
-          type: Sequelize.STRING
-        },
-        data_admissao: {
-          type: Sequelize.DATE
-        },
-        data_demissao: {
-          type: Sequelize.DATE
-        },
-        status: {
-          type: Sequelize.STRING
-        },
-        createdAt: {
-          allowNull: false,
-          type: Sequelize.DATE
-        },
-        updatedAt: {
-          allowNull: false,
-          type: Sequelize.DATE
-        }
+      user_id: {
+        type: Sequelize.UUID,
+        allowNull: true // FK será adicionada depois
+      },
+      nome: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      data_nascimento: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      sexo: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      telefone: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      documento: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      endereco: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      data_admissao: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      data_demissao: {
+        type: Sequelize.DATE,
+        allowNull: true
+      },
+      status: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: 'ativo'
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      }
     });
   },
-  async down(queryInterface, Sequelize) {
+
+  async down(queryInterface) {
     await queryInterface.dropTable('employeess');
   }
 };

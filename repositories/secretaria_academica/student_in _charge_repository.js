@@ -1,30 +1,25 @@
-const { AlunoEncarregado } = require('../../models');
+// src/repositories/studentInChargeRepository.js
+const { AlunoEncarregado, Aluno, Encarregado } = require('../../models');
 
-class AlunoEncarregadoRepository {
-  async create(data) {
-    return await AlunoEncarregado.create(data);
-  }
-
+class StudentInChargeRepository {
   async findAll() {
-    return await AlunoEncarregado.findAll();
+    return await AlunoEncarregado.findAll({
+      include: [
+        { model: Aluno, as: 'aluno', attributes: ['id', 'nome', 'email', 'telefone', 'documento'] },
+        { model: Encarregado, as: 'encarregado', attributes: ['id', 'nome', 'email', 'telefone', 'parentesco'] },
+      ],
+    });
   }
 
-  async findById(id) {
-    return await AlunoEncarregado.findByPk(id);
-  }
-
-  async update(id, data) {
-    const registro = await AlunoEncarregado.findByPk(id);
-    if (!registro) return null;
-    return await registro.update(data);
-  }
-
-  async delete(id) {
-    const registro = await AlunoEncarregado.findByPk(id);
-    if (!registro) return null;
-    await registro.destroy();
-    return true;
+  async findByAlunoId(aluno_id) {
+    return await AlunoEncarregado.findOne({
+      where: { aluno_id },
+      include: [
+        { model: Aluno, as: 'aluno' },
+        { model: Encarregado, as: 'encarregado' },
+      ],
+    });
   }
 }
 
-module.exports = new AlunoEncarregadoRepository();
+module.exports = new StudentInChargeRepository();

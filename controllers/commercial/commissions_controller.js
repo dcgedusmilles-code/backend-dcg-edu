@@ -9,7 +9,7 @@ class ComissaoController {
     async listar(req, res) {
         try {
             const filtros = req.query || {};
-            const comissoes = await comissaoService.listarComissoes(filtros);
+            const comissoes = await comissaoService.listar(filtros);
             res.json(comissoes);
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -21,7 +21,7 @@ class ComissaoController {
      */
     async buscarPorId(req, res) {
         try {
-            const comissao = await comissaoService.obterComissao(req.params.id);
+            const comissao = await comissaoService.buscarPorId(req.params.id);
             if (!comissao) {
                 return res.status(404).json({ message: 'Comissão não encontrada' });
             }
@@ -36,7 +36,7 @@ class ComissaoController {
      */
     async criar(req, res) {
         try {
-            const comissao = await comissaoService.criarComissao(req.body);
+            const comissao = await comissaoService.criar(req.body);
             res.status(201).json(comissao);
         } catch (err) {
             res.status(400).json({ error: err.message });
@@ -48,7 +48,7 @@ class ComissaoController {
      */
     async atualizar(req, res) {
         try {
-            const comissao = await comissaoService.atualizarComissao(req.params.id, req.body);
+            const comissao = await comissaoService.atualizar(req.params.id, req.body);
             if (!comissao) {
                 return res.status(404).json({ message: 'Comissão não encontrada' });
             }
@@ -63,7 +63,7 @@ class ComissaoController {
      */
     async remover(req, res) {
         try {
-            const deleted = await comissaoService.excluirComissao(req.params.id);
+            const deleted = await comissaoService.remover(req.params.id);
             if (!deleted) {
                 return res.status(404).json({ message: 'Comissão não encontrada' });
             }

@@ -179,10 +179,10 @@ const eventoController = require('../../controllers/communication_and_marketing/
  *         description: Evento não encontrado
  */
 
-router.post('/eventos', eventoController.create);
-router.get('/eventos', eventoController.getAll);
-router.get('/eventos/:id', eventoController.getById);
-router.put('/eventos/:id', eventoController.update);
-router.delete('/eventos/:id', eventoController.delete);
+router.post('/create', eventoController.create);
+router.get('/all', eventoController.getAll);
+router.get('/getById/:id', eventoController.getById);
+router.put('/update/:id', eventoController.update);
+router.delete('/delete/:id', eventoController.delete);
 
 module.exports = router;

@@ -20,7 +20,7 @@ const vendaController = require('../../controllers/commercial/sales_controller')
  *       200:
  *         description: Lista de vendas
  */
-router.get('/', vendaController.findAll);
+router.get('/all', vendaController.findAll);
 
 /**
  * @swagger
@@ -38,7 +38,7 @@ router.get('/', vendaController.findAll);
  *       200:
  *         description: Dados da venda
  */
-router.get('/:id', vendaController.findById);
+router.get('/getById/:id', vendaController.findById);
 
 /**
  * @swagger
@@ -74,7 +74,7 @@ router.get('/:id', vendaController.findById);
  *       201:
  *         description: Venda criada
  */
-router.post('/', vendaController.create);
+router.post('/create', vendaController.create);
 
 /**
  * @swagger
@@ -83,7 +83,7 @@ router.post('/', vendaController.create);
  *     summary: Atualizar venda
  *     tags: [Vendas]
  */
-router.put('/:id', vendaController.update);
+router.put('/update/:id', vendaController.update);
 
 /**
  * @swagger
@@ -92,6 +92,6 @@ router.put('/:id', vendaController.update);
  *     summary: Remover venda
  *     tags: [Vendas]
  */
-router.delete('/:id', vendaController.delete);
+router.delete('/delete/:id', vendaController.delete);
 
 module.exports = router;

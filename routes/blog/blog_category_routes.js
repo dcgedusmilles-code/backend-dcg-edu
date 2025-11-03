@@ -30,12 +30,12 @@ const controller = require('../../controllers/blog/blog_category_controller');
  *           type: string
  *           description: Descrição opcional da categoria
  *           example: "Artigos e tutoriais sobre programação e tecnologia"
- *         created_at:
+ *         createdAt:
  *           type: string
  *           format: date-time
  *           description: Data de criação
  *           example: "2025-10-09T12:00:00Z"
- *         updated_at:
+ *         updatedAt:
  *           type: string
  *           format: date-time
  *           description: Última atualização

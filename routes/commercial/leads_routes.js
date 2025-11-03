@@ -141,10 +141,10 @@ const leadController = require('../../controllers/commercial/leads_controller');
  *         description: Lead removido
  */
 
-    router.post('/', leadController.criar);
-    router.get('/', leadController.listar);
-    router.get('/:id', leadController.buscarPorId);
-    router.put('/:id', leadController.atualizar);
-    router.delete('/:id', leadController.remover);
+    router.post('/create', leadController.criar);
+    router.get('/all', leadController.listar);
+    router.get('/getById/:id', leadController.buscarPorId);
+    router.put('/update/:id', leadController.atualizar);
+    router.delete('/delete/:id', leadController.remover);
 
 module.exports = router;

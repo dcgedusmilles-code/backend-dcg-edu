@@ -21,7 +21,7 @@ const categoriesRoutes = require('./blog/blog_category_routes');
 //      COMMERCIAL ROUTES
 const clientsRoutes = require('./commercial/clients_routes');
 const commercialGoalsRoutes = require('./commercial/commercial_goals_routes');
-const cpmmercialProposalsRoutes = require('./commercial/commercial_proposals_routes');
+const commercialProposalsRoutes = require('./commercial/commercial_proposals_routes');
 const commercialReportsRoutes = require('./commercial/commercial_reports_routes');
 const commissionsRoutes = require('./commercial/commissions_routes');
 const contractsRoutes = require('./commercial/contracts_routes');
@@ -160,6 +160,11 @@ const registrationRoutes = require('./training_coordinators/registration_routes'
 const trainingCoordinatorsRoutes = require('./training_coordinators/training_coordinators_routes')
 const trainingPlanRoutes = require('./training_coordinators/training_plan_routes')
 
+
+
+//      USER AUTH
+const userAuth = require('./user/user_routes')
+
 /**
  * 
  *      Routes And Service Routes
@@ -199,7 +204,7 @@ router.use('/blog/categories', categoriesRoutes);
 //      COMMERCIAL ROUTES
 router.use('/comercial/clients', clientsRoutes);
 router.use('/comercial/commercial-goals', commercialGoalsRoutes);
-router.use('/comercial/commercial-proposals', cpmmercialProposalsRoutes);
+router.use('/comercial/commercial-proposals', commercialProposalsRoutes);
 router.use('/comercial/commercial-reports', commercialReportsRoutes);
 router.use('/comercial/commissions', commissionsRoutes);
 router.use('/comercial/contracts', contractsRoutes);
@@ -337,6 +342,9 @@ router.use('/training-coordinators/perticipants', perticipantsRoutes);
 router.use('/training-coordinators/registration', registrationRoutes);
 router.use('/training-coordinators/training-coordinators', trainingCoordinatorsRoutes);
 router.use('/training-coordinators/training-plan', trainingPlanRoutes);
+
+//      USER AUTH
+router.use('/auth', userAuth);
 
 
 module.exports = router;

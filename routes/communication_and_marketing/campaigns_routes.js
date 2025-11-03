@@ -16,7 +16,7 @@ const router = express.Router();
  *     summary: Lista todas campanhas
  *     tags: [Campanhas]
  */
-router.get('/', campanhaController.findAll);
+router.get('/all', campanhaController.findAll);
 
 /**
  * @swagger
@@ -25,7 +25,7 @@ router.get('/', campanhaController.findAll);
  *     summary: Busca campanha por ID
  *     tags: [Campanhas]
  */
-router.get('/:id', campanhaController.findById);
+router.get('/getById/:id', campanhaController.findById);
 
 /**
  * @swagger
@@ -34,7 +34,7 @@ router.get('/:id', campanhaController.findById);
  *     summary: Cria nova campanha
  *     tags: [Campanhas]
  */
-router.post('/', campanhaController.create);
+router.post('/create', campanhaController.create);
 
 /**
  * @swagger
@@ -43,7 +43,7 @@ router.post('/', campanhaController.create);
  *     summary: Atualiza campanha existente
  *     tags: [Campanhas]
  */
-router.put('/:id', campanhaController.update);
+router.put('/update/:id', campanhaController.update);
 
 /**
  * @swagger
@@ -52,6 +52,6 @@ router.put('/:id', campanhaController.update);
  *     summary: Remove campanha
  *     tags: [Campanhas]
  */
-router.delete('/:id', campanhaController.delete);
+router.delete('/delete/:id', campanhaController.delete);
 
 module.exports = router;
