@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 
             // Relacionamento com Agendamento
             FuncionarioSecretaria.hasMany(models.AgendamentoAtendimento, {
-                foreignKey: 'funcionario_secretaria_id',
+                foreignKey: 'aluno_id',
                 as: 'agendamentos'
             });
         }
