@@ -345,6 +345,8 @@ router.use('/training-coordinators/training-plan', trainingPlanRoutes);
 
 //      USER AUTH
 router.use('/auth', userAuth);
+router.use('/user/address', userAuth);
+router.use('/units/address', userAuth);
 
 
 module.exports = router;
