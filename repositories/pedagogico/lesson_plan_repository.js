@@ -5,13 +5,14 @@ class PlanoDeAulaRepository {
     return await PlanoDeAula.create(data);
   }
 
-  async findAll() {
-    return await PlanoDeAula.findAll({ include: ['disciplina', 'professor', 'turma'] });
-  }
+async findAll() {
+  return await Curso.findAll({ include: ['coordenador', 'turmas', 'avaliacoes', 'certificados', 'feedbacks'] });
+}
 
-  async findById(id) {
-    return await PlanoDeAula.findByPk(id, { include: ['disciplina', 'professor', 'turma'] });
-  }
+async findById(id) {
+  return await Curso.findByPk(id, { include: ['coordenador', 'turmas', 'avaliacoes', 'certificados', 'feedbacks'] });
+}
+
 
   async update(id, data) {
     const plano = await PlanoDeAula.findByPk(id);

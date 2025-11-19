@@ -1,30 +1,3 @@
-// 'use strict';
-// const { Model } = require('sequelize');
-// module.exports = (sequelize, DataTypes) => {
-//     class Professor extends Model {
-//         static associate(models) {
-//             Professor.belongsTo(models.DepartamentoInterno, { foreignKey: 'departamento_id', as: 'departamento' });
-//             Professor.hasMany(models.PlanoDeAula, { foreignKey: 'professor_id', as: 'planos' });
-//             Professor.hasMany(models.Aula, { foreignKey: 'professor_id', as: 'aulas' });
-//             Professor.hasMany(models.Avaliacao, { foreignKey: 'professor_id', as: 'avaliacoes' });
-//         }
-//     }
-//     Professor.init({
-//         nome: DataTypes.STRING,
-//         email: DataTypes.STRING,
-//         telefone: DataTypes.STRING,
-//         formacao: DataTypes.STRING,
-//         departamento_id: DataTypes.INTEGER
-//     }, {
-//         sequelize,
-//         modelName: 'Professor',
-//         tableName: 'teacherss',
-//         timestamps: true,
-        
-//     });
-//     return Professor;
-// };
-
 'use strict';
 const { Model } = require('sequelize');
 
@@ -35,7 +8,6 @@ module.exports = (sequelize, DataTypes) => {
       Professor.belongsTo(models.Unidade, { foreignKey: 'unidade_id', as: 'unidade' });
       Professor.belongsTo(models.Curso, { foreignKey: 'curso_id', as: 'curso' });
       Professor.belongsTo(models.Endereco, { foreignKey: 'endereco_id', as: 'enderecos' });
-
       Professor.hasMany(models.PlanoDeAula, { foreignKey: 'professor_id', as: 'planos' });
       Professor.hasMany(models.Aula, { foreignKey: 'professor_id', as: 'aulas' });
       Professor.hasMany(models.Avaliacao, { foreignKey: 'professor_id', as: 'avaliacoes' });
@@ -62,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       unidade_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'unidades',
+          model: 'units',
           key: 'id',
         },
         allowNull: true,
@@ -70,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
       curso_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'cursos',
+          model: 'coursess',
           key: 'id',
         },
         allowNull: true,
@@ -78,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       endereco_id: {
         type: DataTypes.INTEGER,
         references: {
-          model: 'enderecos',
+          model: 'addresses',
           key: 'id',
         },
         allowNull: true,

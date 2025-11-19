@@ -58,7 +58,7 @@ app.use(errorHandler);
 
 (async () => {
   try {
-    await sequelize.sync({ alter: true }); // ou force  { alter: true } para não apagar tudo
+    await sequelize.sync(); // ou force  { alter: true } para não apagar tudo
     console.log('✅ Tabelas sincronizadas com sucesso!');
   } catch (error) {
     console.error('❌ Erro ao sincronizar tabelas:', error);

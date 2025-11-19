@@ -4,7 +4,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Unit extends Model {
     static associate(models) {
-      Unit.belongsTo(models.Address, { foreignKey: 'endereco_id', as: 'endereco' });
+      Unit.belongsTo(models.Endereco, { foreignKey: 'endereco_id', as: 'endereco' });
     }
   }
 
@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     endereco_id: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'Unit',
+    modelName: 'Unidade',
     tableName: 'units'
   });
 

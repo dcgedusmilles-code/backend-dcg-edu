@@ -4,7 +4,7 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Address extends Model {
     static associate(models) {
-      Address.hasOne(models.Unit, { foreignKey: 'endereco_id', as: 'unidade' });
+      Address.hasOne(models.Unidade, { foreignKey: 'endereco_id', as: 'unidade' });
     }
   }
 
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     coordenadas_longitude: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'Address',
+    modelName: 'Endereco',
     tableName: 'addresses'
   });
 

@@ -1,4 +1,9 @@
-const { Coordenador, DepartamentoInterno, Curso, Turma } = require('../../models');
+const {
+  Coordenador,
+  DepartamentoInterno,
+  Curso,
+  Turma,
+} = require("../../models");
 
 class CoordenadorRepository {
   /**
@@ -7,15 +12,19 @@ class CoordenadorRepository {
   async create(data) {
     try {
       // 🔍 Verifica se o departamento existe
-      const departamento = await DepartamentoInterno.findByPk(data.departamento_id);
+      const departamento = await DepartamentoInterno.findByPk(
+        data.departamento_id
+      );
       if (!departamento) {
-        throw new Error('Departamento informado não existe.');
+        throw new Error("Departamento informado não existe.");
       }
 
       // 🚫 Verifica duplicidade de e-mail
-      const emailExistente = await Coordenador.findOne({ where: { email: data.email } });
+      const emailExistente = await Coordenador.findOne({
+        where: { email: data.email },
+      });
       if (emailExistente) {
-        throw new Error('Já existe um coordenador com este e-mail.');
+        throw new Error("Já existe um coordenador com este e-mail.");
       }
 
       // ✅ Cria e retorna o coordenador completo
@@ -36,19 +45,19 @@ class CoordenadorRepository {
         where: filters,
         include: [
           {
-            association: 'departamento',
-            attributes: ['id', 'nome'],
+            association: "departamento",
+            attributes: ["id", "nome"],
           },
           {
-            association: 'cursos',
-            attributes: ['id', 'nome', 'codigo', 'duracao'],
+            association: "cursos",
+            attributes: ["id", "titulo", "descricao", "modalidade", "nivel"],
           },
           {
-            association: 'turmas',
-            attributes: ['id', 'nome', 'periodo', 'ano_letivo'],
+            association: "turmas",
+            attributes: ["id", "nome", "ano", "semestre"],
           },
         ],
-        order: [['createdAt', 'DESC']],
+        order: [["createdAt", "DESC"]],
       });
     } catch (err) {
       throw new Error(`Erro ao listar coordenadores: ${err.message}`);
@@ -63,16 +72,17 @@ class CoordenadorRepository {
       const coordenador = await Coordenador.findByPk(id, {
         include: [
           {
-            association: 'departamento',
-            attributes: ['id', 'nome'],
+            association: "departamento",
+            attributes: ["id", "nome"],
           },
           {
-            association: 'cursos',
-            attributes: ['id', 'nome', 'codigo', 'duracao'],
+            association: "cursos",
+            attributes: ["id", "titulo", "descricao", "modalidade", "nivel"],
           },
+
           {
-            association: 'turmas',
-            attributes: ['id', 'nome', 'periodo', 'ano_letivo'],
+            association: "turmas",
+            attributes: ["id", "nome", "ano", "semestre"],
           },
         ],
       });
@@ -93,21 +103,29 @@ class CoordenadorRepository {
   async update(id, data) {
     try {
       const coordenador = await Coordenador.findByPk(id);
-      if (!coordenador) throw new Error(`Coordenador com ID ${id} não encontrado.`);
+      if (!coordenador)
+        throw new Error(`Coordenador com ID ${id} não encontrado.`);
 
       // 🔍 Valida departamento (se alterado)
-      if (data.departamento_id && data.departamento_id !== coordenador.departamento_id) {
-        const departamento = await DepartamentoInterno.findByPk(data.departamento_id);
+      if (
+        data.departamento_id &&
+        data.departamento_id !== coordenador.departamento_id
+      ) {
+        const departamento = await DepartamentoInterno.findByPk(
+          data.departamento_id
+        );
         if (!departamento) {
-          throw new Error('Novo departamento informado não existe.');
+          throw new Error("Novo departamento informado não existe.");
         }
       }
 
       // 🚫 Evita duplicidade de e-mail
       if (data.email && data.email !== coordenador.email) {
-        const emailExistente = await Coordenador.findOne({ where: { email: data.email } });
+        const emailExistente = await Coordenador.findOne({
+          where: { email: data.email },
+        });
         if (emailExistente) {
-          throw new Error('Já existe outro coordenador com este e-mail.');
+          throw new Error("Já existe outro coordenador com este e-mail.");
         }
       }
 
@@ -124,7 +142,7 @@ class CoordenadorRepository {
   async delete(id) {
     try {
       const coordenador = await Coordenador.findByPk(id, {
-        include: ['cursos', 'turmas'],
+        include: ["cursos", "turmas"],
       });
 
       if (!coordenador) {
@@ -132,9 +150,13 @@ class CoordenadorRepository {
       }
 
       // 🚫 Bloqueia exclusão se houver vínculos
-      if ((coordenador.cursos && coordenador.cursos.length > 0) ||
-          (coordenador.turmas && coordenador.turmas.length > 0)) {
-        throw new Error('Não é possível excluir um coordenador vinculado a cursos ou turmas.');
+      if (
+        (coordenador.cursos && coordenador.cursos.length > 0) ||
+        (coordenador.turmas && coordenador.turmas.length > 0)
+      ) {
+        throw new Error(
+          "Não é possível excluir um coordenador vinculado a cursos ou turmas."
+        );
       }
 
       await coordenador.destroy();

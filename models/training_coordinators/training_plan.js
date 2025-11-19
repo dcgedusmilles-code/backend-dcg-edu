@@ -1,14 +1,14 @@
 'use strict';
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-    class PlanoDeAula extends Model {
+    class PlanoDeTreinoAula extends Model {
         static associate(models) {
-            PlanoDeAula.belongsTo(models.Disciplina, { foreignKey: 'disciplina_id', as: 'disciplina' });
-            PlanoDeAula.belongsTo(models.Professor, { foreignKey: 'professor_id', as: 'professor' });
-            PlanoDeAula.belongsTo(models.Turma, { foreignKey: 'turma_id', as: 'turma' });
+            PlanoDeTreinoAula.belongsTo(models.Disciplina, { foreignKey: 'disciplina_id', as: 'disciplina' });
+            PlanoDeTreinoAula.belongsTo(models.Professor, { foreignKey: 'professor_id', as: 'professor' });
+            PlanoDeTreinoAula.belongsTo(models.Turma, { foreignKey: 'turma_id', as: 'turma' });
         }
     }
-    PlanoDeAula.init({
+    PlanoDeTreinoAula.init({
         titulo: DataTypes.STRING,
         objetivos: DataTypes.TEXT,
         conteudo: DataTypes.TEXT,
@@ -19,10 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         turma_id: DataTypes.INTEGER
     }, {
         sequelize,
-        modelName: 'PlanoDeAula',
+        modelName: 'PlanoDeTreinoAula',
         tableName: 'training_plans',
         timestamps: true,
         
     });
-    return PlanoDeAula;
+    return PlanoDeTreinoAula;
 };

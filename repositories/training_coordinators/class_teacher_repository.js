@@ -8,12 +8,12 @@ class TurmaRepository {
     async create(data) {
         try {
             // 🔍 Verifica se o curso existe
-            const curso = await Curso.findByPk(data.id_curso);
+            const curso = await Curso.findByPk(data.curso_id);
             if (!curso) throw new Error('Curso informado não existe.');
 
             // 🔍 Verifica se o coordenador existe (se fornecido)
-            if (data.id_coordenador) {
-                const coordenador = await Coordenador.findByPk(data.id_coordenador);
+            if (data.coordenador_id) {
+                const coordenador = await Coordenador.findByPk(data.coordenador_id);
                 if (!coordenador) throw new Error('Coordenador informado não existe.');
             }
 
@@ -21,8 +21,8 @@ class TurmaRepository {
             const duplicada = await Turma.findOne({
                 where: {
                     nome: data.nome,
-                    id_curso: data.id_curso,
-                    periodo: data.periodo
+                    curso_id: data.curso_id,
+                    ano: data.ano
                 }
             });
             if (duplicada) throw new Error('Já existe uma turma com este nome para o mesmo curso e período.');
@@ -43,7 +43,7 @@ class TurmaRepository {
             return await Turma.findAll({
                 where: filters,
                 include: [
-                    { association: 'curso', attributes: ['id', 'nome', 'codigo', 'duracao'] },
+                    { association: 'curso', attributes: ['id', 'titulo', 'descricao', 'modalidade', 'nivel'] },
                     { association: 'coordenador', attributes: ['id', 'nome', 'email'] },
                 ],
                 order: [['createdAt', 'DESC']]
@@ -60,13 +60,9 @@ class TurmaRepository {
         try {
             const turma = await Turma.findByPk(id, {
                 include: [
-                    { association: 'curso', attributes: ['id', 'nome', 'codigo', 'duracao'] },
+                    { association: 'curso', attributes: ['id', 'titulo', 'descricao', 'modalidade', 'nivel'] },
                     { association: 'coordenador', attributes: ['id', 'nome', 'email'] },
-                    {
-                        association: 'matriculas',
-                        attributes: ['id', 'id_aluno', 'status', 'ano_letivo'],
-                        include: [{ association: 'aluno', attributes: ['id', 'nome', 'email'] }]
-                    }
+                    
                 ]
             });
 
@@ -86,13 +82,13 @@ class TurmaRepository {
             if (!turma) throw new Error(`Turma com ID ${id} não encontrada.`);
 
             // Se mudar o curso ou coordenador, validar novamente
-            if (data.id_curso && data.id_curso !== turma.id_curso) {
-                const curso = await Curso.findByPk(data.id_curso);
+            if (data.curso_id && data.curso_id !== turma.curso_id) {
+                const curso = await Curso.findByPk(data.curso_id);
                 if (!curso) throw new Error('Novo curso informado não existe.');
             }
 
-            if (data.id_coordenador && data.id_coordenador !== turma.id_coordenador) {
-                const coordenador = await Coordenador.findByPk(data.id_coordenador);
+            if (data.coordenador_id && data.coordenador_id !== turma.coordenador_id) {
+                const coordenador = await Coordenador.findByPk(data.coordenador_id);
                 if (!coordenador) throw new Error('Novo coordenador informado não existe.');
             }
 
@@ -108,15 +104,9 @@ class TurmaRepository {
      */
     async delete(id) {
         try {
-            const turma = await Turma.findByPk(id, {
-                include: [{ association: 'matriculas' }]
-            });
+            const turma = await Turma.findByPk(id);
 
             if (!turma) throw new Error(`Turma com ID ${id} não encontrada.`);
-
-            if (turma.matriculas && turma.matriculas.length > 0) {
-                throw new Error('Não é possível excluir uma turma com matrículas associadas.');
-            }
 
             await turma.destroy();
             return true;

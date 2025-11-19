@@ -6,11 +6,11 @@ class CursoRepository {
   }
 
   async findAll() {
-    return await Curso.findAll({ include: ['coordenador', 'turmas', 'planos', 'avaliacoes', 'certificados', 'feedbacks'] });
+    return await Curso.findAll({ include: ['coordenador', 'turmas', 'avaliacoes', 'certificados', 'feedbacks'] });
   }
 
   async findById(id) {
-    return await Curso.findByPk(id, { include: ['coordenador', 'turmas', 'planos', 'avaliacoes', 'certificados', 'feedbacks'] });
+    return await Curso.findByPk(id, { include: ['coordenador', 'turmas', 'avaliacoes', 'certificados', 'feedbacks'] });
   }
 
   async update(id, data) {

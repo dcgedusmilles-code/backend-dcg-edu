@@ -1,20 +1,20 @@
-const { Address } = require("../models");
+const { Endereco } = require("../../models");
 
 class AddressRepository {
   create(data) {
-    return Address.create(data);
+    return Endereco.create(data);
   }
   findAll() {
-    return Address.findAll();
+    return Endereco.findAll();
   }
   findById(id) {
-    return Address.findByPk(id);
+    return Endereco.findByPk(id);
   }
   update(id, data) {
-    return Address.update(data, { where: { id } });
+    return Endereco.update(data, { where: { id } });
   }
   delete(id) {
-    return Address.destroy({ where: { id } });
+    return Endereco.destroy({ where: { id } });
   }
 }
 

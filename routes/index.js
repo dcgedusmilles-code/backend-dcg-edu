@@ -164,6 +164,8 @@ const trainingPlanRoutes = require('./training_coordinators/training_plan_routes
 
 //      USER AUTH
 const userAuth = require('./user/user_routes')
+const addressRoutes = require('./user/address_routes')
+const unitsRoutes = require('./user/units_routes')
 
 /**
  * 
@@ -345,8 +347,8 @@ router.use('/training-coordinators/training-plan', trainingPlanRoutes);
 
 //      USER AUTH
 router.use('/auth', userAuth);
-router.use('/user/address', userAuth);
-router.use('/units/address', userAuth);
+router.use('/user/address', addressRoutes);
+router.use('/units/address', unitsRoutes);
 
 
 module.exports = router;
