@@ -6,11 +6,11 @@ class PlanoDeAulaRepository {
   }
 
 async findAll() {
-  return await Curso.findAll({ include: ['coordenador', 'turmas', 'avaliacoes', 'certificados', 'feedbacks'] });
+  return await PlanoDeAula.findAll({ include: ['disciplina', 'turma', 'professor'] });
 }
 
 async findById(id) {
-  return await Curso.findByPk(id, { include: ['coordenador', 'turmas', 'avaliacoes', 'certificados', 'feedbacks'] });
+  return await PlanoDeAula.findByPk(id, { include: ['disciplina', 'turma', 'professor'] });
 }
 
 

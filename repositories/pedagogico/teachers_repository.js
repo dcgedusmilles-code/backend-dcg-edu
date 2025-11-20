@@ -6,11 +6,11 @@ class ProfessorRepository {
     }
 
     async findAll() {
-        return await Professor.findAll({ include: ['departamento', 'planos', 'aulas', 'avaliacoes'] });
+        return await Professor.findAll({ include: ['unidade', 'curso', 'planos', 'aulas', 'avaliacoes'] });
     }
 
     async findById(id) {
-        return await Professor.findByPk(id, { include: ['departamento', 'planos', 'aulas', 'avaliacoes'] });
+        return await Professor.findByPk(id, { include: ['unidade','curso', 'planos', 'aulas', 'avaliacoes'] });
     }
 
     async update(id, data) {

@@ -56,26 +56,6 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
       },
-      // data_aula: {
-      //   type: DataTypes.DATEONLY,
-      //   allowNull: false,
-      // },
-      // hora_inicio: {
-      //   type: DataTypes.TIME,
-      //   allowNull: false,
-      // },
-      // hora_fim: {
-      //   type: DataTypes.TIME,
-      //   allowNull: false,
-      // },
-      // sala: {
-      //   type: DataTypes.STRING,
-      //   allowNull: true,
-      // },
-      // status: {
-      //   type: DataTypes.ENUM('Agendada', 'Concluída', 'Cancelada'),
-      //   defaultValue: 'Agendada',
-      // },
     },
     {
       sequelize,
