@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('accounts_receivables', {
@@ -8,35 +9,73 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-        descricao: {
-          type: Sequelize.STRING
-        },
-        valor: {
-          type: Sequelize.FLOAT
-        },
-        data_vencimento: {
-          type: Sequelize.DATE
-        },
-        data_recebimento: {
-          type: Sequelize.DATE
-        },
-        origem: {
-          type: Sequelize.STRING
-        },
-        status: {
-          type: Sequelize.STRING
-        },
-        createdAt: {
-          allowNull: false,
-          type: Sequelize.DATE
-        },
-        updatedAt: {
-          allowNull: false,
-          type: Sequelize.DATE
-        }
+
+      aluno_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'studentss', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+
+      mensalidade_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: { model: 'monthly_feess', key: 'id' },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
+
+      descricao: {
+        type: Sequelize.STRING
+      },
+
+      valor_original: {
+        type: Sequelize.FLOAT,
+        allowNull: false
+      },
+
+      valor_pago: {
+        type: Sequelize.FLOAT,
+        defaultValue: 0
+      },
+
+      valor_em_divida: {
+        type: Sequelize.FLOAT,
+        allowNull: false
+      },
+
+      data_vencimento: {
+        type: Sequelize.DATE
+      },
+
+      data_pagamento: {
+        type: Sequelize.DATE
+      },
+
+      status: {
+        type: Sequelize.ENUM('pendente', 'pago', 'atrasado', 'cancelado'),
+        defaultValue: 'pendente'
+      },
+
+      origem: {
+        type: Sequelize.STRING,
+        defaultValue: 'mensalidade'
+      },
+
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      }
     });
   },
-  async down(queryInterface, Sequelize) {
+
+  async down(queryInterface) {
     await queryInterface.dropTable('accounts_receivables');
   }
 };

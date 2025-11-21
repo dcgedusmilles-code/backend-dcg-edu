@@ -7,6 +7,10 @@ const {
   Protocolo,
   AgendamentoAtendimento,
   Encarregado,
+  Unidade,
+  Turma,
+  Mensalidade,
+  ContaReceber,
 } = require("../../models");
 
 class AlunoRepository {
@@ -23,6 +27,10 @@ class AlunoRepository {
         { model: Transferencia, as: "transferencias" },
         { model: Protocolo, as: "protocolos" },
         { model: AgendamentoAtendimento, as: "agendamentos" },
+        { model: Unidade, as: "unidade" },
+        { model: Turma, as: "turma" },
+        { model: Mensalidade, as: "mensalidades" },
+        { model: ContaReceber, as: "contas" },
         {
           model: Encarregado,
           as: "encarregados",
@@ -42,10 +50,14 @@ class AlunoRepository {
         { model: Transferencia, as: "transferencias" },
         { model: Protocolo, as: "protocolos" },
         { model: AgendamentoAtendimento, as: "agendamentos" },
+        { model: Unidade, as: "unidade" },
+        { model: Turma, as: "turma" },
+        { model: Mensalidade, as: "mensalidades" },
+        { model: ContaReceber, as: "contas" },
         {
           model: Encarregado,
           as: "encarregados",
-          through: { attributes: [] },
+          through: { attributes: [] }, // oculta dados da tabela pivô
         },
       ],
     });
