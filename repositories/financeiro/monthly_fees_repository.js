@@ -10,6 +10,7 @@ class MensalidadeRepository {
             include: [
                 { model: Aluno, as: 'aluno' },
                 { model: Curso, as: 'curso' },
+                { model: Turma, as: 'turma', attributes: ['turma_id', 'nome'] },
                 { model: Inadimplencia, as: 'inadimplencias' }
             ]
         });
@@ -20,6 +21,7 @@ class MensalidadeRepository {
             include: [
                 { model: Aluno, as: 'aluno' },
                 { model: Curso, as: 'curso' },
+                { model: Turma, as: 'turma', attributes: ['turma_id', 'nome'] },
                 { model: Inadimplencia, as: 'inadimplencias' }
             ]
         });
