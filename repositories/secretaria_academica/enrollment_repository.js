@@ -54,12 +54,12 @@ class MatriculaRepository {
                 where: filters,
                 include: [
                     { association: 'aluno', attributes: ['id', 'nome', 'email'] },
-                    { association: 'curso', attributes: ['id', 'nome', 'codigo'] },
-                    { association: 'turma', attributes: ['id', 'nome', 'periodo'] },
+                    { association: 'curso', attributes: ['id', 'titulo', 'nivel', 'carga_horaria'] },
+                    { association: 'turma', attributes: ['id', 'nome','ano', 'semestre'] },
                     {
                         association: 'inscricoes',
-                        attributes: ['id', 'id_disciplina', 'status'],
-                        include: [{ association: 'disciplina', attributes: ['id', 'nome', 'codigo'] }]
+                        attributes: ['id', 'disciplina_id', 'status'],
+                        include: [{ association: 'disciplina', attributes: ['id', 'nome', 'carga_horaria', 'curso_id'] }]
                     }
                 ],
                 order: [['createdAt', 'DESC']]
@@ -77,13 +77,11 @@ class MatriculaRepository {
             const registro = await Matricula.findByPk(id, {
                 include: [
                     { association: 'aluno', attributes: ['id', 'nome', 'email', 'telefone'] },
-                    { association: 'curso', attributes: ['id', 'nome', 'codigo', 'duracao'] },
-                    { association: 'turma', attributes: ['id', 'nome', 'periodo'] },
+                    { association: 'curso', attributes: ['id', 'titulo', 'nivel', 'carga_horaria'] },
+                    { association: 'turma', attributes: ['id', 'nome','ano', 'semestre'] },
                     {
                         association: 'inscricoes',
-                        include: [
-                            { association: 'disciplina', attributes: ['id', 'nome', 'codigo', 'carga_horaria'] }
-                        ]
+                        include: [{ association: 'disciplina', attributes: ['id', 'nome', 'carga_horaria', 'curso_id'] }]
                     }
                 ]
             });
