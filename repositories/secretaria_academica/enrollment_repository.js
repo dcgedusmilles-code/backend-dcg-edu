@@ -8,19 +8,19 @@ class MatriculaRepository {
     async create(data) {
         try {
             // 🔍 Verifica se o aluno existe
-            const aluno = await Aluno.findByPk(data.id_aluno);
+            const aluno = await Aluno.findByPk(data.aluno_id);
             if (!aluno) {
                 throw new Error('Aluno informado não existe.');
             }
 
             // 🔍 Verifica se o curso existe
-            const curso = await Curso.findByPk(data.id_curso);
+            const curso = await Curso.findByPk(data.curso_id);
             if (!curso) {
                 throw new Error('Curso informado não existe.');
             }
 
             // 🔍 Verifica se a turma existe
-            const turma = await Turma.findByPk(data.id_turma);
+            const turma = await Turma.findByPk(data.turma_id);
             if (!turma) {
                 throw new Error('Turma informada não existe.');
             }
@@ -28,8 +28,8 @@ class MatriculaRepository {
             // 🚫 Evita matrícula duplicada para o mesmo aluno e curso no mesmo ano
             const duplicada = await Matricula.findOne({
                 where: {
-                    id_aluno: data.id_aluno,
-                    id_curso: data.id_curso,
+                    aluno_id: data.aluno_id,
+                    curso_id: data.curso_id,
                     ano_letivo: data.ano_letivo
                 }
             });
