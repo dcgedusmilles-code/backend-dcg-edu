@@ -51,6 +51,9 @@ const financialReportsRoutes = require('./financeiro/financial_reports_routes')
 const monthyFeesRoutes = require('./financeiro/monthly_fees_routes')
 const scholarshipsAndDiscountsRoutes = require('./financeiro/scholarships_and_discounts_routes')
 const suppliersRoutes = require('./financeiro/suppliers_routes')
+const precosProductsRoutes = require('./financeiro/prices_routes')
+const informacaoBancariaRouter = require('./financeiro/informacao_bancaria_routes')
+
 
 //      HUMAN RESOURCES ROUTES
 const benefitsRoutes = require('./human_resources/benefits_routes');
@@ -124,6 +127,8 @@ const classroomRoutes = require('./pedagogico/classroom_routes')
 const disciplinesRoutes = require('./pedagogico/disciplines_routes')
 const lessonPlanRoutes = require('./pedagogico/lesson_plan_routes')
 const teachersRoutes = require('./pedagogico/teachers_routes')
+const materialDidatico = require('./pedagogico/material_didatico_routes')
+const horarioRouter = require('./pedagogico/horario_routes')
 
 //      SECRETARIA ACADEMICA ROUTES
 const academicDocumentsRoutes = require('./secretaria_academica/academic_documents_routes')
@@ -236,6 +241,8 @@ router.use('/financeiro/financial-reports', financialReportsRoutes)
 router.use('/financeiro/monthly-fees', monthyFeesRoutes)
 router.use('/financeiro/scholarships-and-discounts', scholarshipsAndDiscountsRoutes)
 router.use('/financeiro/suppliers', suppliersRoutes)
+router.use('/financeiro/precos-produts', precosProductsRoutes)
+router.use('/financeiro/informacao-bancaria', informacaoBancariaRouter)
 
 //      HUMAN RESOURCES ROUTES
 router.use('/human-resources/benefits', benefitsRoutes);
@@ -310,6 +317,8 @@ router.use('/pedagogico/classroom', classroomRoutes);
 router.use('/pedagogico/disciplines', disciplinesRoutes);
 router.use('/pedagogico/lesson-plan', lessonPlanRoutes);
 router.use('/pedagogico/teachers', teachersRoutes);
+router.use('/pedagogico/material-didatico', materialDidatico)
+router.use('/pedagogico/horario', horarioRouter)
 
 //      SECRETARIA ACADEMICA ROUTES
 router.use('/secretaria-academica/academic-documents', academicDocumentsRoutes);

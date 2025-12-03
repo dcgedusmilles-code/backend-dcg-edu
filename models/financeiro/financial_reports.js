@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         periodo_inicio: DataTypes.DATE,
         periodo_fim: DataTypes.DATE,
         gerado_em: DataTypes.DATE,
-        responsavel_id: DataTypes.STRING
+        responsavel_id: DataTypes.INTEGER
     }, {
         sequelize,
         modelName: 'RelatorioFinanceiro',

@@ -3,7 +3,8 @@ const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class SalarioFuncionario extends Model {
         static associate(models) {
-            SalarioFuncionario.belongsTo(models.FuncionarioSecretaria, { foreignKey: 'funcionario_id', as: 'funcionario' });
+            // SalarioFuncionario.belongsTo(models.FuncionarioSecretaria, { foreignKey: 'funcionario_id', as: 'funcionario' });
+            SalarioFuncionario.belongsTo(models.Funcionario, { foreignKey: 'funcionario_id', as: 'funcionario' });
         }
     }
     SalarioFuncionario.init({
