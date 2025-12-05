@@ -53,6 +53,10 @@ const scholarshipsAndDiscountsRoutes = require('./financeiro/scholarships_and_di
 const suppliersRoutes = require('./financeiro/suppliers_routes')
 const precosProductsRoutes = require('./financeiro/prices_routes')
 const informacaoBancariaRouter = require('./financeiro/informacao_bancaria_routes')
+const receitasRoutes = require('./financeiro/receitas_routes')
+const despesasRoutes = require('./financeiro/despesas_routes')
+const contasReceberRoutes = require('./financeiro/contas_receber_routes')
+const contasPagarRoutes = require('./financeiro/contas_pagar_routes')
 
 
 //      HUMAN RESOURCES ROUTES
@@ -243,6 +247,10 @@ router.use('/financeiro/scholarships-and-discounts', scholarshipsAndDiscountsRou
 router.use('/financeiro/suppliers', suppliersRoutes)
 router.use('/financeiro/precos-produts', precosProductsRoutes)
 router.use('/financeiro/informacao-bancaria', informacaoBancariaRouter)
+router.use('/financeiro/receitas', receitasRoutes);
+router.use('/financeiro/despesas', despesasRoutes);
+router.use('/financeiro/contas-receber', contasReceberRoutes);
+router.use('/financeiro/contas-pagar', contasPagarRoutes);
 
 //      HUMAN RESOURCES ROUTES
 router.use('/human-resources/benefits', benefitsRoutes);
