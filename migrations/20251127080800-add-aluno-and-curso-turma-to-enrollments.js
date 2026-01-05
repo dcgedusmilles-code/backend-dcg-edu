@@ -24,7 +24,7 @@ module.exports = {
     await queryInterface.changeColumn("enrollments", "turma_id", {
       type: Sequelize.INTEGER,
       allowNull: true,
-      references: { model: "classes", key: "id" },
+      references: { model: "class_teachers", key: "id" },
       onUpdate: "CASCADE",
       onDelete: "SET NULL",
     });

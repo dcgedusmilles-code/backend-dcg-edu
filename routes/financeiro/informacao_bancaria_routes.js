@@ -1,5 +1,7 @@
-const service = require("../services/informacaoBancariaService");
+const controller = require("../../controllers/financeiro/informacao_bancaria_controller");
 
+const express = require('express');
+const router = express.Router();
 /**
  * @swagger
  * tags:
@@ -29,47 +31,58 @@ const service = require("../services/informacaoBancariaService");
  *     responses:
  *       201: { description: Criado }
  */
-exports.create = async (req, res) => {
-  try {
-    const created = await service.create(req.body);
-    return res.status(201).json(created);
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
-};
 
-exports.list = async (req, res) => {
-  try {
-    const data = await service.list(req.query);
-    return res.json(data);
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
-};
 
-exports.get = async (req, res) => {
-  try {
-    const item = await service.get(req.params.id);
-    return res.json(item);
-  } catch (err) {
-    return res.status(404).json({ error: err.message });
-  }
-};
+/**
+ * @swagger
+ * tags:
+ *   name: Mensalidades
+ *   description: Gestão das mensalidades
+ */
 
-exports.update = async (req, res) => {
-  try {
-    const updated = await service.update(req.params.id, req.body);
-    return res.json(updated);
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
-};
+/**
+ * @swagger
+ * /financeiro/informacao-bancaria:
+ *   get:
+ *     summary: Lista todas as informacao-bancaria
+ *     tags: [informacao-bancaria]
+ */
+router.get('/', controller.list);
 
-exports.remove = async (req, res) => {
-  try {
-    await service.remove(req.params.id);
-    return res.status(204).send();
-  } catch (err) {
-    return res.status(400).json({ error: err.message });
-  }
-};
+/**
+ * @swagger
+ * /financeiro/informacao-bancaria/{id}:
+ *   get:
+ *     summary: Busca uma informacao-bancaria pelo ID
+ *     tags: [informacao-bancaria]
+ */
+router.get('/:id', controller.get);
+
+/**
+ * @swagger
+ * /financeiro/informacao-bancaria:
+ *   post:
+ *     summary: Cria uma nova informacao-bancaria
+ *     tags: [informacao-bancaria]
+ */
+router.post('/', controller.create);
+
+/**
+ * @swagger
+ * /financeiro/informacao-bancaria/{id}:
+ *   put:
+ *     summary: Atualiza uma informacao-bancaria
+ *     tags: [informacao-bancaria]
+ */
+router.put('/:id', controller.update);
+
+/**
+ * @swagger
+ * /financeiro/informacao-bancaria/{id}:
+ *   delete:
+ *     summary: Remove uma informacao-bancaria
+ *     tags: [informacao-bancaria]
+ */
+router.delete('/:id', controller.remove);
+
+module.exports = router;

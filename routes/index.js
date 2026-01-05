@@ -247,6 +247,7 @@ router.use('/financeiro/scholarships-and-discounts', scholarshipsAndDiscountsRou
 router.use('/financeiro/suppliers', suppliersRoutes)
 router.use('/financeiro/precos-produts', precosProductsRoutes)
 router.use('/financeiro/informacao-bancaria', informacaoBancariaRouter)
+router.use('/financeiro/informacao-bancaria', informacaoBancariaRouter)
 router.use('/financeiro/receitas', receitasRoutes);
 router.use('/financeiro/despesas', despesasRoutes);
 router.use('/financeiro/contas-receber', contasReceberRoutes);

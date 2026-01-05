@@ -15,6 +15,10 @@ module.exports = {
       cliente_id: { type: Sequelize.INTEGER, allowNull: true },
       unidade_id: { type: Sequelize.INTEGER, allowNull: true },
       curso_id: { type: Sequelize.INTEGER, allowNull: true },
+      turma_id: { type: Sequelize.INTEGER, allowNull: true },
+      responsavel_id: { type: Sequelize.INTEGER, allowNull: true },
+      material_id: { type: Sequelize.INTEGER, allowNull: true },
+      mensalidade_id: { type: Sequelize.INTEGER, allowNull: true },
       metodo_pagamento: { type: Sequelize.STRING(100), allowNull: true },
       comprovante_url: { type: Sequelize.STRING(1024), allowNull: true },
       created_at: {
